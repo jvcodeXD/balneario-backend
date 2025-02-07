@@ -10,6 +10,7 @@ export const registerUser = async (req: Request, res: Response) => {
     logger.info(`Usuario registrado: ${newUser.user}`)
     res.status(201).json(newUser)
   } catch (error: any) {
+    logger.error(`Error al registrar usuario: ${error.message}`)
     res.status(400).json({ error: error.message })
   }
 }

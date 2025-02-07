@@ -16,4 +16,7 @@ export class User {
 
   @Column({ default: '' })
   name: string
+
+  @Column({ default: false })
+  isDeleted: boolean
 }
