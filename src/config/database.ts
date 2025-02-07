@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import { User } from '../app/entities'
+import logger from './logger'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -21,6 +22,6 @@ export const connectDB = async () => {
   try {
     await AppDataSource.initialize()
   } catch (error) {
-    console.error('❌ Error al conectar la BD:', error)
+    logger.error('❌ Error al conectar la BD:', error)
   }
 }
