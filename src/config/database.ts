@@ -20,7 +20,6 @@ export const AppDataSource = new DataSource({
 export const connectDB = async () => {
   try {
     await AppDataSource.initialize()
-    console.log('📦 Base de datos conectada')
   } catch (error) {
     console.error('❌ Error al conectar la BD:', error)
   }

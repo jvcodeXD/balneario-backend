@@ -13,4 +13,7 @@ export class User {
 
   @Column({ default: 'user' })
   rol: string
+
+  @Column({ default: '' })
+  name: string
 }

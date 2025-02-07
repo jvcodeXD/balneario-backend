@@ -4,3 +4,4 @@ export {
   refreshAccessToken,
   registerUser
 } from './auth.controller'
+export { uploadFile } from './upload.controller'
