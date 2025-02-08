@@ -1,27 +1,12 @@
 import { Router } from 'express'
-import {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser
-} from '../app/controllers'
+import { create, getAll, getById, update, remove } from '../app/controllers'
 
 const router = Router()
 
-// Crear un nuevo usuario
-router.post('/', createUser)
-
-// Obtener todos los usuarios
-router.get('/', getAllUsers)
-
-// Obtener un usuario por ID
-router.get('/:id', getUserById)
-
-// Actualizar un usuario por ID
-router.put('/:id', updateUser)
-
-// Eliminar un usuario por ID
-router.delete('/:id', deleteUser)
+router.post('/', create)
+router.get('/', getAll)
+router.get('/:id', getById)
+router.put('/:id', update)
+router.delete('/:id', remove)
 
 export default router

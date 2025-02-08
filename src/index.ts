@@ -4,7 +4,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 
-import { routes } from './routes'
+import { default as routes } from './routes/index.routes'
 import { connectDB } from './config'
 
 dotenv.config()

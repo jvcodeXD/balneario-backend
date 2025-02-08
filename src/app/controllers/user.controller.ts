@@ -3,36 +3,27 @@ import { UserService } from '../services/user.service'
 
 const userService = new UserService()
 
-export const createUser = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const create = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await userService.createUser(req.body)
+    const user = await userService.create(req.body)
     res.status(201).json(user)
   } catch (error: any) {
     res.status(400).json({ error: error.message })
   }
 }
 
-export const getAllUsers = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
-    const users = await userService.getAllUsers()
+    const users = await userService.getAll()
     res.json(users)
   } catch (error: any) {
     res.status(400).json({ error: error.message })
   }
 }
 
-export const getUserById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await userService.getUserById(req.params.id)
+    const user = await userService.getById(req.params.id)
     if (!user) {
       res.status(404).json({ error: 'Usuario no encontrado' })
       return
@@ -43,12 +34,9 @@ export const getUserById = async (
   }
 }
 
-export const updateUser = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const update = async (req: Request, res: Response): Promise<void> => {
   try {
-    const updatedUser = await userService.updateUser(req.params.id, req.body)
+    const updatedUser = await userService.update(req.params.id, req.body)
     if (!updatedUser) {
       res.status(404).json({ error: 'Usuario no encontrado' })
       return
@@ -59,12 +47,9 @@ export const updateUser = async (
   }
 }
 
-export const deleteUser = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const remove = async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await userService.deleteUser(req.params.id)
+    const result = await userService.delete(req.params.id)
     if (!result) {
       res.status(404).json({ error: 'Usuario no encontrado' })
       return

@@ -9,32 +9,32 @@ export class UserService {
     this.userRepository = new UserRepository()
   }
 
-  createUser = async (userData: Partial<User>): Promise<User> => {
+  create = async (userData: Partial<User>): Promise<User> => {
     if (userData.pass) {
       userData.pass = await bcrypt.hash(userData.pass, 10)
     }
-    return this.userRepository.createUser(userData)
+    return this.userRepository.create(userData)
   }
 
-  getAllUsers = async (): Promise<User[]> => {
-    return this.userRepository.getAllUsers()
+  getAll = async (): Promise<User[]> => {
+    return this.userRepository.getAll()
   }
 
-  getUserById = async (id: string): Promise<User | null> => {
-    return this.userRepository.getUserById(id)
+  getById = async (id: string): Promise<User | null> => {
+    return this.userRepository.getById(id)
   }
 
-  updateUser = async (
+  update = async (
     id: string,
     updateData: Partial<User>
   ): Promise<User | null> => {
     if (updateData.pass) {
       updateData.pass = await bcrypt.hash(updateData.pass, 10)
     }
-    return this.userRepository.updateUser(id, updateData)
+    return this.userRepository.update(id, updateData)
   }
 
-  deleteUser = async (id: string): Promise<boolean> => {
-    return this.userRepository.deleteUser(id)
+  delete = async (id: string): Promise<boolean> => {
+    return this.userRepository.delete(id)
   }
 }
