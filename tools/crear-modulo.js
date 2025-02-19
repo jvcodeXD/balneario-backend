@@ -26,7 +26,8 @@ export class ${moduleName} {
 
   @Column({ default: false })
   isDeleted: boolean
-}`
+}
+`
 
 const repositoryContent = `import { Repository } from 'typeorm'
 import { AppDataSource } from '../../config'
@@ -66,7 +67,8 @@ export class ${moduleName}Repository {
     await this.repository.save(${moduleLower})
     return true
   }
-}`
+}
+`
 
 const serviceContent = `import { ${moduleName}Repository } from '../repositories/${moduleLower}.repository'
 import { ${moduleName} } from '../entities/${moduleLower}.entity'
@@ -97,82 +99,83 @@ export class ${moduleName}Service {
   delete = async (id: string): Promise<boolean> => {
     return this.repository.delete(id)
   }
-}`
+}
+`
 
 const controllerContent = `import { Request, Response } from 'express'
 import { ${moduleName}Service } from '../services/${moduleLower}.service'
 
 const service = new ${moduleName}Service()
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const ${moduleLower} = await service.create(req.body)
-    res.status(201).json(${moduleLower})
-  } catch (error: any) {
-    res.status(400).json({ error: error.message })
-  }
-}
-
-export const getAll = async (req: Request, res: Response) => {
-  try {
-    const ${moduleLower}s = await service.getAll()
-    res.json(${moduleLower}s)
-  } catch (error: any) {
-    res.status(400).json({ error: error.message })
-  }
-}
-
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const ${moduleLower} = await service.getById(req.params.id)
-    if (!${moduleLower}) {
-      res.status(404).json({ error: '${moduleName} no encontrado' })
-      return
+export const ${moduleName}Controller = {
+  create: async (req: Request, res: Response) => {
+    try {
+      const ${moduleLower} = await service.create(req.body)
+      res.status(201).json(${moduleLower})
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
     }
-    res.json(${moduleLower})
-  } catch (error: any) {
-    res.status(400).json({ error: error.message })
+  },
+  getAll: async (req: Request, res: Response) => {
+    try {
+      const ${moduleLower}s = await service.getAll()
+      res.json(${moduleLower}s)
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+  getById: async (req: Request, res: Response) => {
+    try {
+      const ${moduleLower} = await service.getById(req.params.id)
+      if (!${moduleLower}) {
+        res.status(404).json({ error: '${moduleName} no encontrado' })
+        return
+      }
+      res.json(${moduleLower})
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+  update: async (req: Request, res: Response) => {
+    try {
+      const ${moduleLower} = await service.update(req.params.id, req.body)
+      if (!${moduleLower}) {
+        res.status(404).json({ error: '${moduleName} no encontrado' })
+        return 
+      }
+      res.json(${moduleLower})
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+  remove: async (req: Request, res: Response) => {
+    try {
+      const result = await service.delete(req.params.id)
+      if (!result) {
+        res.status(404).json({ error: '${moduleName} no encontrado' })
+        return 
+      }
+      res.json({ message: '${moduleName} eliminado' })
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
   }
 }
-
-export const update = async (req: Request, res: Response) => {
-  try {
-    const ${moduleLower} = await service.update(req.params.id, req.body)
-    if (!${moduleLower}) {
-      res.status(404).json({ error: '${moduleName} no encontrado' })
-      return 
-    }
-    res.json(${moduleLower})
-  } catch (error: any) {
-    res.status(400).json({ error: error.message })
-  }
-}
-
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const result = await service.delete(req.params.id)
-    if (!result) {
-      res.status(404).json({ error: '${moduleName} no encontrado' })
-      return 
-    }
-    res.json({ message: '${moduleName} eliminado' })
-  } catch (error: any) {
-    res.status(400).json({ error: error.message })
-  }
-}`
+`
 
 const routeContent = `import { Router } from 'express'
-import { create, getAll, getById, update, remove } from '../app/controllers'
+import { ${moduleName}Controller } from '../app/controllers'
 
 const router = Router()
 
-router.post('/', create)
-router.get('/', getAll)
-router.get('/:id', getById)
-router.put('/:id', update)
-router.delete('/:id', remove)
+router.post('/', ${moduleName}Controller.create)
+router.get('/', ${moduleName}Controller.getAll)
+router.get('/:id', ${moduleName}Controller.getById)
+router.put('/:id', ${moduleName}Controller.update)
+router.delete('/:id', ${moduleName}Controller.remove)
 
-export default router`
+export default router
+`
 
 // Función para escribir archivos
 const writeFile = (dir, filename, content) => {
@@ -222,7 +225,7 @@ updateBarrelFile(
 )
 updateBarrelFile(
   `${baseDir}/controllers`,
-  `export * from './${moduleLower}.controller'\n`
+  `export { ${moduleName}Controller } from './${moduleLower}.controller'\n`
 )
 
 // Agregar la ruta al index de routes

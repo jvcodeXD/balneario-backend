@@ -9,13 +9,13 @@ export class User {
   user: string
 
   @Column()
-  pass: string
+  password: string
 
   @Column({ default: 'user' })
   rol: string
 
   @Column({ default: '' })
-  name: string
+  fullName: string
 
   @Column({ default: false })
   isDeleted: boolean

@@ -10,8 +10,8 @@ export class UserService {
   }
 
   create = async (userData: Partial<User>): Promise<User> => {
-    if (userData.pass) {
-      userData.pass = await bcrypt.hash(userData.pass, 10)
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData.password, 10)
     }
     return this.userRepository.create(userData)
   }
@@ -28,8 +28,8 @@ export class UserService {
     id: string,
     updateData: Partial<User>
   ): Promise<User | null> => {
-    if (updateData.pass) {
-      updateData.pass = await bcrypt.hash(updateData.pass, 10)
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10)
     }
     return this.userRepository.update(id, updateData)
   }

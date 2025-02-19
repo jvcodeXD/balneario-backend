@@ -1,5 +1,5 @@
 export { uploadFile } from './upload.controller'
 
-export * from './auth.controller'
+export { AuthController } from './auth.controller'
 
-export * from './user.controller'
+export { UserController } from './user.controller'
