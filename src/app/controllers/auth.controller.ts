@@ -8,7 +8,7 @@ export const AuthController = {
     try {
       const { user, pass, rol } = req.body
       const newUser = await register(user, pass, rol)
-      logger.info(`Usuario registrado: ${newUser.user}`)
+      logger.info(`Usuario registrado: ${newUser.username}`)
       res.status(201).json(newUser)
     } catch (error: any) {
       logger.error(`Error al registrar usuario: ${error.message}`)
@@ -30,7 +30,7 @@ export const AuthController = {
         secure: true,
         sameSite: 'strict'
       })
-      logger.info(`Usuario logueado: ${userData.user}`)
+      logger.info(`Usuario logueado: ${userData.username}`)
       res.json({ accessToken, user: userData })
     } catch (error: any) {
       logger.error(`Error al loguear usuario: ${error.message}`)

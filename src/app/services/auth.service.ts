@@ -2,22 +2,27 @@ import bcrypt from 'bcryptjs'
 import { AppDataSource } from '../../config'
 import { User } from '../entities/user.entity'
 import { generateAccessToken, generateRefreshToken } from '../../utils'
+import { UserRole } from '../dtos'
 
 const userRepository = AppDataSource.getRepository(User)
 
 export const register = async (
-  user: string,
+  username: string,
   pass: string,
-  rol: string = 'user'
+  role: UserRole.user
 ) => {
   const hashedPassword = await bcrypt.hash(pass, 10)
-  const newUser = userRepository.create({ user, password: hashedPassword, rol })
+  const newUser = userRepository.create({
+    username,
+    password: hashedPassword,
+    role
+  })
   await userRepository.save(newUser)
   return newUser
 }
 
-export const login = async (user: string, pass: string) => {
-  const existingUser = await userRepository.findOneBy({ user })
+export const login = async (username: string, pass: string) => {
+  const existingUser = await userRepository.findOneBy({ username })
   if (!existingUser) throw new Error('Usuario no encontrado')
 
   const isMatch = await bcrypt.compare(pass, existingUser.password)

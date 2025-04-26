@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm'
 import { AppDataSource } from '../../config'
-import { User } from '../entities/user.entity'
+import { User } from '../entities'
 
 export class UserRepository {
   private repository: Repository<User>
@@ -15,7 +15,7 @@ export class UserRepository {
   }
 
   getAll = async (): Promise<User[]> => {
-    return await this.repository.find({ where: { isDeleted: false } }) // Filtra eliminaciones lógicas
+    return await this.repository.find({ where: { isDeleted: false } })
   }
 
   getById = async (id: string): Promise<User | null> => {

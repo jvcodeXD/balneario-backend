@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { UserRole } from '../dtos'
 
 @Entity()
 export class User {
@@ -6,16 +7,19 @@ export class User {
   id: string
 
   @Column({ unique: true })
-  user: string
+  username: string
 
   @Column()
   password: string
 
-  @Column({ default: 'user' })
-  rol: string
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.user })
+  role: UserRole
 
   @Column({ default: '' })
   fullName: string
+
+  @Column({ nullable: true })
+  picture?: string
 
   @Column({ default: false })
   isDeleted: boolean
