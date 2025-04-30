@@ -17,14 +17,13 @@ export const AuthController = {
   },
   loginUser: async (req: Request, res: Response) => {
     try {
-      const { user, pass } = req.body
+      const { username, pass } = req.body
       const {
         accessToken,
         refreshToken,
         user: userData
-      } = await login(user, pass)
+      } = await login(username, pass)
 
-      // Guardamos el refresh token en una cookie httpOnly
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true,

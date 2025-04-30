@@ -49,17 +49,28 @@ export const UserController = {
     upload.single('picture'),
     async (req: Request, res: Response): Promise<void> => {
       try {
-        const updatedUser = await service.update(req.params.id, req.body)
+        const userId = req.params.id
+
+        // Si hay una imagen nueva, la renombramos antes de guardar
+        if (req.file) {
+          const renamedPath = renameProfileImage(req.file.filename, userId)
+          req.body.picture = renamedPath
+        }
+
+        const updatedUser = await service.update(userId, req.body)
+
         if (!updatedUser) {
           res.status(404).json({ error: 'Usuario no encontrado' })
           return
         }
+
         res.json(updatedUser)
       } catch (error: any) {
         res.status(400).json({ error: error.message })
       }
     }
   ],
+
   remove: async (req: Request, res: Response): Promise<void> => {
     try {
       const result = await service.delete(req.params.id)
