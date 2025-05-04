@@ -1,15 +1,13 @@
 import { Request, Response } from 'express'
-import { UserService } from '../services'
+import { UserService, renameProfileImage } from '../services'
 import { upload } from '../../middlewares'
-import { renameProfileImage } from '../services/helper.service'
-import { UserResponseDto } from '../response'
 
 const service = new UserService()
 
 export const UserController = {
   create: [
     upload.single('picture'),
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: Request, res: Response) => {
       try {
         const user = await service.create(req.body)
 
@@ -25,17 +23,17 @@ export const UserController = {
       }
     }
   ],
-  getAll: async (req: Request, res: Response): Promise<void> => {
+  getAll: async (req: Request, res: Response) => {
     try {
-      const users: UserResponseDto[] = await service.getAll()
+      const users = await service.getAll()
       res.json(users)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
   },
-  getById: async (req: Request, res: Response): Promise<void> => {
+  getById: async (req: Request, res: Response) => {
     try {
-      const user: UserResponseDto | null = await service.getById(req.params.id)
+      const user = await service.getById(req.params.id)
       if (!user) {
         res.status(404).json({ error: 'Usuario no encontrado' })
         return
@@ -47,11 +45,10 @@ export const UserController = {
   },
   update: [
     upload.single('picture'),
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: Request, res: Response) => {
       try {
         const userId = req.params.id
 
-        // Si hay una imagen nueva, la renombramos antes de guardar
         if (req.file) {
           const renamedPath = renameProfileImage(req.file.filename, userId)
           req.body.picture = renamedPath
@@ -71,7 +68,7 @@ export const UserController = {
     }
   ],
 
-  remove: async (req: Request, res: Response): Promise<void> => {
+  remove: async (req: Request, res: Response) => {
     try {
       const result = await service.delete(req.params.id)
       if (!result) {
