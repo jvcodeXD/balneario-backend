@@ -38,4 +38,11 @@ export class CategoriaRepository {
     await this.repository.save(categoria)
     return true
   }
+
+  existe = async (nombre: string) => {
+    const categoria = await this.repository.findOne({
+      where: { nombre, isDeleted: false }
+    })
+    return categoria ? true : false
+  }
 }

@@ -60,5 +60,13 @@ export const CategoriaController = {
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
+  },
+  existe: async (req: Request, res: Response) => {
+    try {
+      const existe = await service.existe(req.params.nombre)
+      res.json({ existe })
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
   }
 }

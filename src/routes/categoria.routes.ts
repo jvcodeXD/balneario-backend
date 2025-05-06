@@ -8,5 +8,6 @@ router.get('/', CategoriaController.getAll)
 router.get('/:id', CategoriaController.getById)
 router.put('/:id', CategoriaController.update)
 router.delete('/:id', CategoriaController.remove)
+router.get('/existe/:nombre', CategoriaController.existe)
 
 export default router

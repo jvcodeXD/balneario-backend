@@ -30,4 +30,8 @@ export class CategoriaService {
   delete = async (id: string) => {
     return this.categoriaRepository.delete(id)
   }
+
+  existe = async (nombre: string) => {
+    return await this.categoriaRepository.existe(nombre)
+  }
 }
