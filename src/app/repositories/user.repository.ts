@@ -9,23 +9,20 @@ export class UserRepository {
     this.repository = AppDataSource.getRepository(User)
   }
 
-  create = async (userData: Partial<User>): Promise<User> => {
+  create = async (userData: Partial<User>) => {
     const user = this.repository.create(userData)
     return await this.repository.save(user)
   }
 
-  getAll = async (): Promise<User[]> => {
+  getAll = async () => {
     return await this.repository.find({ where: { isDeleted: false } })
   }
 
-  getById = async (id: string): Promise<User | null> => {
+  getById = async (id: string) => {
     return await this.repository.findOne({ where: { id, isDeleted: false } })
   }
 
-  update = async (
-    id: string,
-    updateData: Partial<User>
-  ): Promise<User | null> => {
+  update = async (id: string, updateData: Partial<User>) => {
     const user = await this.repository.findOne({
       where: { id, isDeleted: false }
     })
@@ -34,7 +31,7 @@ export class UserRepository {
     return await this.repository.save(user)
   }
 
-  delete = async (id: string): Promise<boolean> => {
+  delete = async (id: string) => {
     const user = await this.repository.findOne({ where: { id } })
     if (!user) return false
     user.isDeleted = true
