@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "e0de9223-2121-4ae5-9d4c-89ea25be7482",
+		"name": "Balneario",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21399091"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": []
+		},
+		{
+			"name": "usuarios",
+			"item": [
+				{
+					"name": "obtenerUsuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarUsuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "arthas",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "user",
+									"type": "text"
+								},
+								{
+									"key": "fullName",
+									"value": "Arthas Menethil",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/home/jvcode/Imágenes/personajes/arthas.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarUsuario",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "arthas",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "user",
+									"type": "text"
+								},
+								{
+									"key": "fullName",
+									"value": "Arthas Menethil",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/home/jvcode/Imágenes/personajes/arthas.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/users/012f13af-cc5e-419b-9c2d-fa0dd09bf0c8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"users",
+								"012f13af-cc5e-419b-9c2d-fa0dd09bf0c8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerUsuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/users/012f13af-cc5e-419b-9c2d-fa0dd09bf0c8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"users",
+								"012f13af-cc5e-419b-9c2d-fa0dd09bf0c8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarUsuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/users/012f13af-cc5e-419b-9c2d-fa0dd09bf0c8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"users",
+								"012f13af-cc5e-419b-9c2d-fa0dd09bf0c8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "categoria",
+			"item": [
+				{
+					"name": "obtenerCategorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/categoria",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearCategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Individual\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/categoria",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"categoria"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerCategoria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/categoria/7d2a56e0-39e1-44db-be9c-71f358ebb9d5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"categoria",
+								"7d2a56e0-39e1-44db-be9c-71f358ebb9d5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarCategoria",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Doble\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/categoria/7d2a56e0-39e1-44db-be9c-71f358ebb9d5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"categoria",
+								"7d2a56e0-39e1-44db-be9c-71f358ebb9d5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliiminarCategoria",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/categoria/7d2a56e0-39e1-44db-be9c-71f358ebb9d5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"categoria",
+								"7d2a56e0-39e1-44db-be9c-71f358ebb9d5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
