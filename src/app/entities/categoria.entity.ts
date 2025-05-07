@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+import { Ambiente } from './ambiente.entity'
 
 @Entity()
 export class Categoria {
@@ -10,4 +11,7 @@ export class Categoria {
 
   @Column({ default: false })
   isDeleted: boolean
+
+  @OneToMany(() => Ambiente, (ambiente) => ambiente.categoria)
+  ambientes: Ambiente[]
 }

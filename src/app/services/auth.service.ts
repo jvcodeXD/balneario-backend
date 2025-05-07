@@ -9,7 +9,7 @@ const userRepository = AppDataSource.getRepository(User)
 export const register = async (
   username: string,
   pass: string,
-  role: UserRole.user
+  role: UserRole.USER
 ) => {
   const hashedPassword = await bcrypt.hash(pass, 10)
   const newUser = userRepository.create({

@@ -43,7 +43,7 @@
 							"formdata": [
 								{
 									"key": "username",
-									"value": "arthas",
+									"value": "mio",
 									"type": "text"
 								},
 								{
@@ -53,18 +53,18 @@
 								},
 								{
 									"key": "role",
-									"value": "user",
+									"value": "ADMIN",
 									"type": "text"
 								},
 								{
 									"key": "fullName",
-									"value": "Arthas Menethil",
+									"value": "Mio",
 									"type": "text"
 								},
 								{
 									"key": "picture",
 									"type": "file",
-									"src": "/home/jvcode/Imágenes/personajes/arthas.jpeg"
+									"src": "postman-cloud:///1efb7ccb-ec81-4610-abcc-d1854cb3a9ac"
 								}
 							]
 						},
@@ -211,7 +211,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Individual\"\n}",
+							"raw": "{\n    \"nombre\": \"Doble\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -300,6 +300,132 @@
 								"api",
 								"categoria",
 								"7d2a56e0-39e1-44db-be9c-71f358ebb9d5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ambiente",
+			"item": [
+				{
+					"name": "obtenerAmbientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/ambiente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"ambiente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crearAmbiente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo\": \"CUARTO\",\n    \"nombre\": \"C-1\",\n    \"estado\": \"DISPONIBLE\",\n    \"precio\": 20.0,\n    \"categoriaId\": \"52281b49-70b3-4984-b8aa-8dd1a5210984\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/ambiente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"ambiente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtenerAmbiente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/ambiente/f9d3a589-f6f2-4806-8bfd-d2c66a6d690b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"ambiente",
+								"f9d3a589-f6f2-4806-8bfd-d2c66a6d690b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarAmbiente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tipo\": \"CUARTO\",\n    \"nombre\": \"C-1\",\n    \"estado\": \"DISPONIBLE\",\n    \"precio\": 20.0,\n    \"categoriaId\": \"52281b49-70b3-4984-b8aa-8dd1a5210984\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/ambiente/f9d3a589-f6f2-4806-8bfd-d2c66a6d690b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"ambiente",
+								"f9d3a589-f6f2-4806-8bfd-d2c66a6d690b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarAmbiente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/ambiente/f9d3a589-f6f2-4806-8bfd-d2c66a6d690b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"ambiente",
+								"f9d3a589-f6f2-4806-8bfd-d2c66a6d690b"
 							]
 						}
 					},

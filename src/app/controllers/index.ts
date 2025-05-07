@@ -5,3 +5,5 @@ export { AuthController } from './auth.controller'
 export { UserController } from './user.controller'
 
 export { CategoriaController } from './categoria.controller'
+
+export { AmbienteController } from './ambiente.controller'
