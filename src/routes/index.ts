@@ -7,3 +7,5 @@ export { default as userRoutes } from './user.routes'
 export { default as categoriaRoutes } from './categoria.routes'
 
 export { default as ambienteRoutes } from './ambiente.routes'
+
+export { default as precioRoutes } from './precio.routes'

@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import logger from './logger'
 import dotenv from 'dotenv'
-import { User, Categoria, Ambiente } from '../app/entities'
+import { User, Categoria, Ambiente, Precio } from '../app/entities'
 
 dotenv.config()
 
@@ -15,7 +15,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'testdb',
   synchronize: true,
   logging: false,
-  entities: [User, Categoria, Ambiente]
+  entities: [User, Categoria, Ambiente, Precio]
 })
 
 export const connectDB = async () => {

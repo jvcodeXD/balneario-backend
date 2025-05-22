@@ -19,12 +19,8 @@ export class Ambiente {
   @Column({ default: '' })
   nombre: string
 
-  @Column({
-    type: 'enum',
-    enum: EstadoAmbiente,
-    default: EstadoAmbiente.DISPONIBLE
-  })
-  estado: EstadoAmbiente
+  @Column({ type: 'enum', enum: EstadoAmbiente, default: EstadoAmbiente.DISPONIBLE })
+  estadoAmbiente: EstadoAmbiente
 
   @Column('decimal', { default: 0.0 })
   precio: number
