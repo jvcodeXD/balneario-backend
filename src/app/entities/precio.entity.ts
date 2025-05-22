@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm'
+import { Ambiente } from '.'
+
 
 @Entity()
 export class Precio {
@@ -19,4 +21,8 @@ export class Precio {
 
   @DeleteDateColumn()
   deletedAt?: Date
+
+  @OneToMany(() => Ambiente, (ambiente) => ambiente.precio)
+  ambientes: Ambiente[]
+
 }

@@ -16,21 +16,19 @@ export class AmbienteRepository {
 
   getAll = async () => {
     return await this.repository.find({
-      where: { isDeleted: false },
-      relations: ['categoria']
+      relations: ['precio']
     })
   }
 
   getById = async (id: string) => {
     return await this.repository.findOne({
-      where: { id, isDeleted: false },
-      relations: ['categoria']
+      relations: ['precio']
     })
   }
 
   update = async (id: string, data: Partial<Ambiente>) => {
     const ambiente = await this.repository.findOne({
-      where: { id, isDeleted: false }
+      where: { id }
     })
     if (!ambiente) return null
     Object.assign(ambiente, data)
@@ -40,7 +38,6 @@ export class AmbienteRepository {
   delete = async (id: string) => {
     const ambiente = await this.repository.findOne({ where: { id } })
     if (!ambiente) return false
-    ambiente.isDeleted = true
     await this.repository.save(ambiente)
     return true
   }

@@ -12,6 +12,5 @@ export class Categoria {
   @Column({ default: false })
   isDeleted: boolean
 
-  @OneToMany(() => Ambiente, (ambiente) => ambiente.categoria)
-  ambientes: Ambiente[]
+  
 }

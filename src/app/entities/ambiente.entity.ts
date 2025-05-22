@@ -3,10 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm'
 import { EstadoAmbiente, TipoAmbiente } from '../dtos'
-import { Categoria } from '.'
+import { Precio } from '.'
 
 @Entity()
 export class Ambiente {
@@ -22,16 +25,21 @@ export class Ambiente {
   @Column({ type: 'enum', enum: EstadoAmbiente, default: EstadoAmbiente.DISPONIBLE })
   estadoAmbiente: EstadoAmbiente
 
-  @Column('decimal', { default: 0.0 })
-  precio: number
 
-  @Column({ default: false })
-  isDeleted: boolean
-
-  @ManyToOne(() => Categoria)
-  @JoinColumn({ name: 'categoriaId' })
-  categoria: Categoria
+  @ManyToOne(() => Precio, (precio) => precio.ambientes)
+  @JoinColumn({ name: 'precioId' })
+  precio: Precio
 
   @Column({ type: 'uuid', nullable: true })
-  categoriaId: string
+  precioId: string
+
+  @CreateDateColumn()
+  createdAt: Date
+
+  @UpdateDateColumn()
+  updatedAt: Date
+
+  @DeleteDateColumn()
+  deletedAt?: Date
+
 }
