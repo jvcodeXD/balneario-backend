@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { UserRole } from '../dtos'
+import { Venta } from '.'
 
 @Entity()
 export class User {
@@ -23,4 +24,7 @@ export class User {
 
   @Column({ default: false })
   isDeleted: boolean
+
+  @OneToMany(() => Venta, (venta) => venta.usuario)
+  ventas: Venta[]
 }

@@ -3,13 +3,14 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm'
 import { EstadoAmbiente, TipoAmbiente } from '../dtos'
-import { Precio } from '.'
+import { Precio, Venta } from '.'
 
 @Entity()
 export class Ambiente {
@@ -32,6 +33,9 @@ export class Ambiente {
 
   @Column({ type: 'uuid', nullable: true })
   precioId: string
+
+  @OneToMany(() => Venta, (venta) => venta.ambiente)
+  ventas: Venta[]
 
   @CreateDateColumn()
   createdAt: Date

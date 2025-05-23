@@ -5,7 +5,8 @@ import {
   categoriaRoutes,
   uploadRoutes,
   userRoutes,
-  precioRoutes
+  precioRoutes,
+  ventaRoutes
 } from '.'
 
 const router = Router()
@@ -16,5 +17,6 @@ router.use('/users', userRoutes)
 router.use('/categoria', categoriaRoutes)
 router.use('/ambiente', ambienteRoutes)
 router.use('/precio',precioRoutes)
+router.use('/venta',ventaRoutes)
 
 export default router

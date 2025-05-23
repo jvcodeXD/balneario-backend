@@ -22,6 +22,7 @@ export class AmbienteRepository {
 
   getById = async (id: string) => {
     return await this.repository.findOne({
+      where: { id },
       relations: ['precio']
     })
   }
@@ -36,9 +37,9 @@ export class AmbienteRepository {
   }
 
   delete = async (id: string) => {
-    const ambiente = await this.repository.findOne({ where: { id } })
+    const ambiente = await this.getById(id)
     if (!ambiente) return false
-    await this.repository.save(ambiente)
+    await this.repository.softRemove(ambiente)
     return true
   }
 }
