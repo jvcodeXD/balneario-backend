@@ -4,10 +4,10 @@ export { AuthController } from './auth.controller'
 
 export { UserController } from './user.controller'
 
-export { CategoriaController } from './categoria.controller'
-
 export { AmbienteController } from './ambiente.controller'
 
 export { PrecioController } from './precio.controller'
 
 export { VentaController } from './venta.controller'
+
+export { ReservaController } from './reserva.controller'

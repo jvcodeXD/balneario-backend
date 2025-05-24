@@ -1,13 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
-import { User, Ambiente } from '.'
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
+import { User, Ambiente, Reserva } from '.'
+import { TipoVenta } from '../dtos'
 @Entity()
 export class Venta {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column({ type: 'varchar', length: 50 })
-  estado: string
-
+  @Column({ type: 'enum', enum: TipoVenta, default: TipoVenta.INMEDIATA })
+  tipo: TipoVenta
+  
   @Column({ type: 'timestamp' })
   horaInicio: Date
 
@@ -30,6 +31,9 @@ export class Venta {
   @ManyToOne(() => Ambiente)
   @JoinColumn({ name: 'ambienteId' })
   ambiente: Ambiente
+
+  @OneToOne(() => Reserva, (reserva) => reserva.venta, { nullable: true })
+  reserva?: Reserva
 
   @Column({ type: 'uuid' })
   ambienteId: string
