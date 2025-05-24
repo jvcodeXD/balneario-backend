@@ -16,7 +16,10 @@ export class AmbienteRepository {
 
   getAll = async () => {
     return await this.repository.find({
-      relations: ['precio']
+      relations: ['precio'],
+      order: {
+        nombre: 'ASC'
+      }
     })
   }
 

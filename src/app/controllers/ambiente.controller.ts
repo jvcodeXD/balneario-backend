@@ -9,6 +9,7 @@ export const AmbienteController = {
       const ambiente = await service.create(req.body)
       res.status(201).json(ambiente)
     } catch (error: any) {
+      const msg = error.message.includes('ya existe') ? error.message : 'Error al crear ambiente'
       res.status(400).json({ error: error.message })
     }
   },
@@ -44,6 +45,7 @@ export const AmbienteController = {
       }
       res.json(updated)
     } catch (error: any) {
+      const msg = error.message.includes('ya existe') ? error.message : 'Error al crear ambiente'
       res.status(400).json({ error: error.message })
     }
   },
