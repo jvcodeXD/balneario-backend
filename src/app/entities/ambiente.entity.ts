@@ -23,8 +23,8 @@ export class Ambiente {
   @Column({ default: '' })
   nombre: string
 
-  @Column({ type: 'enum', enum: EstadoAmbiente, default: EstadoAmbiente.DISPONIBLE })
-  estadoAmbiente: EstadoAmbiente
+  @Column({ type: 'enum', enum: EstadoAmbiente, default: EstadoAmbiente.HABILITADO })
+  estado: EstadoAmbiente
 
 
   @ManyToOne(() => Precio, (precio) => precio.ambientes)

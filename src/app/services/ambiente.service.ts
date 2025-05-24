@@ -9,6 +9,10 @@ export class AmbienteService {
   }
 
   create = async (data: Ambiente) => {
+    const existe = await this.ambienteRepository.findOne( { nombre: data.nombre } )
+    if (existe) {
+      throw new Error('Ese nombre ya existe')
+    }
     return await this.ambienteRepository.create(data)
   }
 

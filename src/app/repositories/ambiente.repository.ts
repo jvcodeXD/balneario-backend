@@ -42,4 +42,10 @@ export class AmbienteRepository {
     await this.repository.softRemove(ambiente)
     return true
   }
+
+  findOne = async (where: Partial<Ambiente>) => {
+    return await this.repository.findOne({
+      where: { ...where }
+    })
+  }
 }
