@@ -29,7 +29,7 @@ export class AmbienteService {
 
   update = async (id: string, data: Partial<Ambiente>) => {
     const existe = await this.ambienteRepository.findOne( { nombre: data.nombre } )
-    if (existe) {
+    if (existe && existe.id!==id) {
       throw new Error('Ese nombre ya existe')
     }
     return await this.ambienteRepository.update(id, data)
