@@ -1,6 +1,8 @@
-import { Repository } from 'typeorm'
+import { Repository, IsNull} from 'typeorm'
 import { AppDataSource } from '../../config'
 import { Ambiente } from '../entities'
+import { EstadoAmbiente, TipoAmbiente } from '../dtos'
+
 
 export class AmbienteRepository {
   private repository: Repository<Ambiente>
@@ -26,6 +28,22 @@ export class AmbienteRepository {
   getById = async (id: string) => {
     return await this.repository.findOne({
       where: { id },
+      relations: ['precio']
+    })
+  }
+
+  getByTipo = async (tipo: TipoAmbiente) => {
+    return await this.repository.find({
+      where: { tipo, deletedAt: IsNull() },
+      order: { nombre: 'ASC' },
+      relations: ['precio']
+    })
+  }
+
+  getHabilitados = async () => {
+    return await this.repository.find({
+      where: { estado: EstadoAmbiente.HABILITADO, deletedAt: IsNull() },
+      order: { nombre: 'ASC' },
       relations: ['precio']
     })
   }

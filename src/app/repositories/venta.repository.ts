@@ -16,13 +16,14 @@ export class VentaRepository {
 
     getAll = async () => {
         return await this.repository.find({
-            relations: ['ambiente', 'user']
+            relations: ['ambiente', 'usuario']
         })
     }
 
     getById = async (id: string) => {
         return await this.repository.findOne({
-            relations: ['ambiente', 'user']
+            relations: ['ambiente', 'usuario'],
+            where: { id }
         })
     }
 

@@ -1,5 +1,6 @@
 import { AmbienteRepository } from '../repositories'
 import { Ambiente } from '../entities'
+import { TipoAmbiente } from '../dtos'
 
 export class AmbienteService {
   private ambienteRepository: AmbienteRepository
@@ -25,6 +26,14 @@ export class AmbienteService {
     if (!ambiente) return null
 
     return ambiente
+  }
+
+  getByTipo = async (tipo: TipoAmbiente) => {
+    return await this.ambienteRepository.getByTipo(tipo)
+  }
+  
+  getHabilitados = async () => {
+    return await this.ambienteRepository.getHabilitados()
   }
 
   update = async (id: string, data: Partial<Ambiente>) => {

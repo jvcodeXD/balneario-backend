@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { AmbienteService } from '../services'
+import { TipoAmbiente } from '../dtos'
 
 const service = new AmbienteService()
 
@@ -31,6 +32,25 @@ export const AmbienteController = {
         return
       }
       res.json(ambiente)
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  getByTipo: async (req: Request, res: Response) => {
+    try {
+      const tipo = req.params.tipo as TipoAmbiente
+      const ambientes = await service.getByTipo(tipo)
+      res.json(ambientes)
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+  
+  getHabilitados: async (req: Request, res: Response) => {
+    try {
+      const ambientes = await service.getHabilitados()
+      res.json(ambientes)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
