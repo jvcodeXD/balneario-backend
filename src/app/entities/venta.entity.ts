@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
-import { User, Ambiente, Reserva } from '.'
+import { User, Ambiente } from '.'
 import { TipoVenta } from '../dtos'
 @Entity()
 export class Venta {
@@ -21,6 +21,12 @@ export class Venta {
   @Column({ type: 'int' })
   cantidad: number
 
+  @Column({ default: '' })
+  nombreCliente: string
+
+  @Column({ default: '' })
+  celularCliente: string
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'usuarioId' })
   usuario: User
@@ -31,9 +37,6 @@ export class Venta {
   @ManyToOne(() => Ambiente)
   @JoinColumn({ name: 'ambienteId' })
   ambiente: Ambiente
-
-  @OneToOne(() => Reserva, (reserva) => reserva.venta, { nullable: true })
-  reserva?: Reserva
 
   @Column({ type: 'uuid' })
   ambienteId: string
