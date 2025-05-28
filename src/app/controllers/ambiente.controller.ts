@@ -17,7 +17,12 @@ export const AmbienteController = {
 
   getAll: async (req: Request, res: Response) => {
     try {
-      const ambientes = await service.getAll()
+      const filtros: any = {}
+      if (req.query.tipo) filtros.tipo = req.query.tipo
+      if (req.query.estado) filtros.estado = req.query.estado
+      if (req.query.nombre) filtros.nombre = req.query.nombre
+
+      const ambientes = await service.getAll(filtros)
       res.json(ambientes)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
@@ -32,25 +37,6 @@ export const AmbienteController = {
         return
       }
       res.json(ambiente)
-    } catch (error: any) {
-      res.status(400).json({ error: error.message })
-    }
-  },
-
-  getByTipo: async (req: Request, res: Response) => {
-    try {
-      const tipo = req.params.tipo as TipoAmbiente
-      const ambientes = await service.getByTipo(tipo)
-      res.json(ambientes)
-    } catch (error: any) {
-      res.status(400).json({ error: error.message })
-    }
-  },
-  
-  getHabilitados: async (req: Request, res: Response) => {
-    try {
-      const ambientes = await service.getHabilitados()
-      res.json(ambientes)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }

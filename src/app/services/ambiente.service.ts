@@ -17,8 +17,8 @@ export class AmbienteService {
     return await this.ambienteRepository.create(data)
   }
 
-  getAll = async () => {
-    return await this.ambienteRepository.getAll()
+  getAll = async (filtros: Partial<Ambiente>) => {
+    return await this.ambienteRepository.getAll(filtros)
   }
 
   getById = async (id: string) => {
@@ -26,14 +26,6 @@ export class AmbienteService {
     if (!ambiente) return null
 
     return ambiente
-  }
-
-  getByTipo = async (tipo: TipoAmbiente) => {
-    return await this.ambienteRepository.getByTipo(tipo)
-  }
-  
-  getHabilitados = async () => {
-    return await this.ambienteRepository.getHabilitados()
   }
 
   update = async (id: string, data: Partial<Ambiente>) => {

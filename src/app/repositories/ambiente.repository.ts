@@ -16,8 +16,23 @@ export class AmbienteRepository {
     return await this.repository.save(ambiente)
   }
 
-  getAll = async () => {
+  getAll = async (filtros: Partial<Ambiente>) => {
+
+    const where: any = {
+      deletedAt: null,
+    }
+    if (filtros.tipo) {
+      where.tipo = filtros.tipo
+    }
+    if (filtros.estado) {
+      where.estado = filtros.estado
+    }
+    if (filtros.nombre) {
+      where.nombre = filtros.nombre
+    }
+
     return await this.repository.find({
+      where,
       relations: ['precio'],
       order: {
         nombre: 'ASC'
@@ -28,22 +43,6 @@ export class AmbienteRepository {
   getById = async (id: string) => {
     return await this.repository.findOne({
       where: { id },
-      relations: ['precio']
-    })
-  }
-
-  getByTipo = async (tipo: TipoAmbiente) => {
-    return await this.repository.find({
-      where: { tipo, deletedAt: IsNull() },
-      order: { nombre: 'ASC' },
-      relations: ['precio']
-    })
-  }
-
-  getHabilitados = async () => {
-    return await this.repository.find({
-      where: { estado: EstadoAmbiente.HABILITADO, deletedAt: IsNull() },
-      order: { nombre: 'ASC' },
       relations: ['precio']
     })
   }
