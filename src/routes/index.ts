@@ -9,3 +9,5 @@ export { default as ambienteRoutes } from './ambiente.routes'
 export { default as precioRoutes } from './precio.routes'
 
 export { default as ventaRoutes } from './venta.routes'
+
+export { default as reciboRoutes } from './recibo.routes'

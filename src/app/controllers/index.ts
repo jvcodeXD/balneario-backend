@@ -9,3 +9,5 @@ export { AmbienteController } from './ambiente.controller'
 export { PrecioController } from './precio.controller'
 
 export { VentaController } from './venta.controller'
+
+export { ReciboController } from './recibo.controller'
