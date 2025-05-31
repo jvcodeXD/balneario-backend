@@ -1,5 +1,6 @@
 import { VentaRepository } from '../repositories'
 import { Venta } from '../entities'
+import { TipoAmbiente } from '../dtos'
 
 export class VentaService {
   private ventaRepository: VentaRepository
@@ -30,4 +31,10 @@ export class VentaService {
   delete = async (id: string) => {
     return this.ventaRepository.delete(id)
   }
+
+  getVentasByFecha = async (fecha: string, tipo?:TipoAmbiente) => {
+    const date = new Date(fecha)
+    return await this.ventaRepository.getVentasByFecha(date,tipo)
+  }
 }
+

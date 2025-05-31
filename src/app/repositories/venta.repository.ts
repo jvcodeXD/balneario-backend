@@ -1,6 +1,7 @@
-import { Repository } from "typeorm";
+import { Repository, Between } from "typeorm";
 import { AppDataSource } from "../../config";
 import { Venta } from "../entities";
+import { TipoAmbiente } from "../dtos";
 
 export class VentaRepository {
     private repository: Repository<Venta>
@@ -19,6 +20,31 @@ export class VentaRepository {
             relations: ['ambiente', 'usuario']
         })
     }
+
+    getVentasByFecha = async (fecha: Date,tipo?:TipoAmbiente) => {
+        const inicioDelDia = new Date(fecha)
+        inicioDelDia.setHours(0, 0, 0, 0)
+        const finDelDia = new Date(fecha)
+        finDelDia.setHours(23, 59, 59, 999)
+        const query = await this.repository
+          .createQueryBuilder('venta')
+          .leftJoin('venta.ambiente', 'ambiente')
+          .select('venta.ambienteId', 'ambienteId')
+          .addSelect('ambiente.nombre', 'nombreAmbiente')
+          .addSelect('ambiente.tipo', 'tipoAmbiente')
+          .addSelect('COUNT(venta.id)', 'cantidad')
+          .where('venta.fecha BETWEEN :inicio AND :fin', { inicio: inicioDelDia, fin: finDelDia })
+          if (tipo) {
+            query.andWhere('ambiente.tipo = :tipo', { tipo })
+          }
+          const ventas = await query
+          .groupBy('venta.ambienteId')
+          .addGroupBy('ambiente.nombre')
+          .addGroupBy('ambiente.tipo')
+          .getRawMany()
+      
+        return ventas
+      }
 
     getById = async (id: string) => {
         return await this.repository.findOne({
