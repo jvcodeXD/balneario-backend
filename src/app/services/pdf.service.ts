@@ -31,7 +31,7 @@ export const generarReciboPiscina = async (
   doc
     .fontSize(14)
     .font('Helvetica-Bold')
-    .text('RECIBO PISCINA', { align: 'center' })
+    .text('RECIBO SAUNA MIXTO', { align: 'center' })
   doc.moveDown(0.2)
 
   // Fecha y hora

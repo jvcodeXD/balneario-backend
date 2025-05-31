@@ -32,7 +32,7 @@ export class VentaRepository {
           .select('venta.ambienteId', 'ambienteId')
           .addSelect('ambiente.nombre', 'nombreAmbiente')
           .addSelect('ambiente.tipo', 'tipoAmbiente')
-          .addSelect('COUNT(venta.id)', 'cantidad')
+          .addSelect('SUM(venta.cantidad)', 'cantidad')
           .where('venta.fecha BETWEEN :inicio AND :fin', { inicio: inicioDelDia, fin: finDelDia })
           if (tipo) {
             query.andWhere('ambiente.tipo = :tipo', { tipo })
