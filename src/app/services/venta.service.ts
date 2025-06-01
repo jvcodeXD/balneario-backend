@@ -32,9 +32,7 @@ export class VentaService {
     return this.ventaRepository.delete(id)
   }
 
-  getVentasByFecha = async (fecha: string, tipo?:TipoAmbiente) => {
-    const date = new Date(fecha)
-    return await this.ventaRepository.getVentasByFecha(date,tipo)
+  getVentasByFecha = async (fecha: string, tipo?: TipoAmbiente) => {
+    return await this.ventaRepository.getVentasByFecha(fecha, tipo)
   }
 }
-

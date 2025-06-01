@@ -68,7 +68,7 @@ export const VentaController = {
       if (!fecha) res.status(400).json({ error: 'Se requiere una fecha' })
       let tipo: TipoAmbiente | undefined = undefined
       if (req.query.tipo) tipo = req.query.tipo as TipoAmbiente
-      const ventas = await service.getVentasByFecha(fecha as string,tipo)
+      const ventas = await service.getVentasByFecha(fecha as string, tipo)
       res.json(ventas)
     } catch (error: any) {
       res.status(500).json({ error: error.message })

@@ -19,7 +19,7 @@ export const generarReciboPiscina = async (
   const precioTotal = totalNinos + totalAdultos
 
   const doc = new PDFDocument({
-    size: [180, 150], // Tamaño para impresora térmica
+    size: [180, 180], // Tamaño para impresora térmica
     margin: 15
   })
 
