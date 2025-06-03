@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn} from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn
+} from 'typeorm'
 import { User, Ambiente } from '.'
 import { TipoVenta } from '../dtos'
 @Entity()
@@ -8,7 +18,7 @@ export class Venta {
 
   @Column({ type: 'enum', enum: TipoVenta, default: TipoVenta.INMEDIATA })
   tipo: TipoVenta
-  
+
   @Column({ type: 'timestamp' })
   horaInicio: Date
 
@@ -40,6 +50,9 @@ export class Venta {
 
   @Column({ type: 'uuid' })
   ambienteId: string
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  adelanto: number
 
   @CreateDateColumn()
   fecha: Date

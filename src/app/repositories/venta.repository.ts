@@ -1,7 +1,7 @@
-import { Repository, Between } from 'typeorm'
+import { Repository, Not, In } from 'typeorm'
 import { AppDataSource } from '../../config'
 import { Venta } from '../entities'
-import { TipoAmbiente } from '../dtos'
+import { TipoAmbiente, TipoVenta } from '../dtos'
 
 export class VentaRepository {
   private repository: Repository<Venta>
@@ -17,6 +17,7 @@ export class VentaRepository {
 
   getAll = async () => {
     return await this.repository.find({
+      where: { tipo: Not(In([TipoVenta.CANCELADA, TipoVenta.FINALIZADA])) },
       relations: ['ambiente', 'usuario']
     })
   }
@@ -24,7 +25,6 @@ export class VentaRepository {
   getVentasByFecha = async (fecha: string, tipo?: TipoAmbiente) => {
     const inicio = new Date(`${fecha} 00:00:00`)
     const fin = new Date(`${fecha} 23:59:59`)
-    console.log(inicio, fin)
     const query = this.repository
       .createQueryBuilder('venta')
       .leftJoin('venta.ambiente', 'ambiente')
@@ -58,8 +58,20 @@ export class VentaRepository {
       where: { id }
     })
     if (!venta) return null
-    Object.assign(venta, data)
-    return await this.repository.save(venta)
+    if (data.tipo === TipoVenta.RESTANTE) {
+      const { id, fecha, updatedAt, ...rest } = venta
+      const nuevaVenta = this.repository.create({
+        ...rest,
+        usuarioId: data.usuarioId || venta.usuarioId,
+        tipo: data.tipo || venta.tipo
+      })
+      venta.tipo = TipoVenta.FINALIZADA
+      await this.repository.save(venta)
+      return await this.repository.save(nuevaVenta)
+    } else {
+      Object.assign(venta, data)
+      return await this.repository.save(venta)
+    }
   }
 
   delete = async (id: string) => {

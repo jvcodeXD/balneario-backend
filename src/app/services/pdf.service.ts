@@ -2,7 +2,7 @@ import PDFDocument from 'pdfkit'
 import { Response } from 'express'
 import { UserService, VentaService } from '.'
 import { format } from 'date-fns'
-import { TipoAmbiente } from '../dtos'
+import { TipoAmbiente, TipoVenta } from '../dtos'
 
 export const generarReciboPiscina = async (
   res: Response,
@@ -152,6 +152,9 @@ export const generarReciboPDF = async (res: Response, id: string) => {
     ['Hora Inicio:', format(new Date(venta.horaInicio), 'HH:mm')],
     ['Hora Fin:', format(new Date(venta.horaFin), 'HH:mm')]
   ]
+  if (venta.tipo === TipoVenta.RESERVADA) {
+    datos.push(['Adelanto:', `${venta.adelanto} Bs`])
+  }
   if (
     venta.ambiente.tipo !== TipoAmbiente.FAMILIAR &&
     venta.ambiente.tipo !== TipoAmbiente.SAUNA
