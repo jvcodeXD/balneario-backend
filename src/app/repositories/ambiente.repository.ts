@@ -1,8 +1,6 @@
-import { Repository, IsNull} from 'typeorm'
+import { Repository } from 'typeorm'
 import { AppDataSource } from '../../config'
 import { Ambiente } from '../entities'
-import { EstadoAmbiente, TipoAmbiente } from '../dtos'
-
 
 export class AmbienteRepository {
   private repository: Repository<Ambiente>
@@ -17,9 +15,8 @@ export class AmbienteRepository {
   }
 
   getAll = async (filtros: Partial<Ambiente>) => {
-
     const where: any = {
-      deletedAt: null,
+      deletedAt: null
     }
     if (filtros.tipo) {
       where.tipo = filtros.tipo

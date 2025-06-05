@@ -1,24 +1,24 @@
 import { Request, Response } from 'express'
-import { PrecioService } from '../services'
+import { EventoService } from '../services'
 import { logger } from '../../config'
 
-const service = new PrecioService()
+const service = new EventoService()
 
-export const PrecioController = {
+export const EventoController = {
   create: async (req: Request, res: Response) => {
     try {
       logger.info(req.body)
-      const precio = await service.create(req.body)
-      res.status(201).json(precio)
+      const evento = await service.create(req.body)
+      res.status(201).json(evento)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
   },
 
-  getAll: async (req: Request, res: Response) => {
+  getAll: async (_req: Request, res: Response) => {
     try {
-      const precio = await service.getAll()
-      res.json(precio)
+      const eventos = await service.getAll()
+      res.json(eventos)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
@@ -26,12 +26,12 @@ export const PrecioController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const precio = await service.getById(req.params.id)
-      if (!precio) {
-        res.status(404).json({ error: 'Precio no encontrado' })
+      const evento = await service.getById(req.params.id)
+      if (!evento) {
+        res.status(404).json({ error: 'Evento no encontrado' })
         return
       }
-      res.json(precio)
+      res.json(evento)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
@@ -39,12 +39,12 @@ export const PrecioController = {
 
   update: async (req: Request, res: Response) => {
     try {
-      const precio = await service.update(req.params.id, req.body)
-      if (!precio) {
-        res.status(404).json({ error: 'Precio no encontrado' })
+      const evento = await service.update(req.params.id, req.body)
+      if (!evento) {
+        res.status(404).json({ error: 'Evento no encontrado' })
         return
       }
-      res.json(precio)
+      res.json(evento)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
@@ -52,12 +52,12 @@ export const PrecioController = {
 
   remove: async (req: Request, res: Response) => {
     try {
-      const precio = await service.delete(req.params.id)
-      if (!precio) {
-        res.status(404).json({ error: 'Precio no encontrado' })
+      const evento = await service.delete(req.params.id)
+      if (!evento) {
+        res.status(404).json({ error: 'Evento no encontrado' })
         return
       }
-      res.json({ message: 'Precio eliminado' })
+      res.json({ message: 'Evento eliminado' })
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
