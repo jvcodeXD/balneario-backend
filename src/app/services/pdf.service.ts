@@ -156,6 +156,7 @@ export const generarReciboPDF = async (res: Response, id: string) => {
     datos.push(['Adelanto:', `${venta.adelanto} Bs`])
   }
   if (
+    venta.ambiente &&
     venta.ambiente.tipo !== TipoAmbiente.FAMILIAR &&
     venta.ambiente.tipo !== TipoAmbiente.SAUNA
   )

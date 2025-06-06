@@ -1,5 +1,5 @@
-import { Repository, Not, In } from 'typeorm'
-import { AppDataSource } from '../../config'
+import { Repository, Not, In, LessThan, MoreThan, IsNull } from 'typeorm'
+import { AppDataSource, logger } from '../../config'
 import { Venta } from '../entities'
 import { TipoAmbiente, TipoVenta } from '../dtos'
 
@@ -13,6 +13,36 @@ export class VentaRepository {
   create = async (data: Partial<Venta>) => {
     const venta = this.repository.create(data)
     return await this.repository.save(venta)
+  }
+
+  getConflictos = async (ambienteId: string, inicio: Date, fin: Date) => {
+    return await this.repository.find({
+      where: {
+        ambienteId: ambienteId,
+        deletedAt: IsNull(),
+        tipo: Not(In(['CANCELADA', 'FINALIZADA'])),
+        horaInicio: LessThan(fin),
+        horaFin: MoreThan(inicio)
+      }
+    })
+  }
+
+  getConflictosExcluyendoId = async (
+    id: string,
+    ambienteId: string,
+    horaInicio: Date,
+    horaFin: Date
+  ) => {
+    return await this.repository.find({
+      where: {
+        id: Not(id),
+        ambienteId: ambienteId,
+        deletedAt: IsNull(),
+        tipo: Not(In(['CANCELADA', 'FINALIZADA'])),
+        horaInicio: LessThan(horaFin),
+        horaFin: MoreThan(horaInicio)
+      }
+    })
   }
 
   getAll = async () => {
@@ -57,7 +87,9 @@ export class VentaRepository {
     const venta = await this.repository.findOne({
       where: { id }
     })
+
     if (!venta) return null
+
     if (data.tipo === TipoVenta.RESTANTE) {
       const { id, fecha, updatedAt, ...rest } = venta
       const nuevaVenta = this.repository.create({
@@ -69,7 +101,17 @@ export class VentaRepository {
       await this.repository.save(venta)
       return await this.repository.save(nuevaVenta)
     } else {
-      Object.assign(venta, data)
+      const {
+        ambiente,
+        usuario,
+        id,
+        fecha,
+        updatedAt,
+        deletedAt,
+        ...camposLimpiados
+      } = data
+      Object.assign(venta, camposLimpiados)
+
       return await this.repository.save(venta)
     }
   }

@@ -46,7 +46,7 @@ export class Venta {
 
   @ManyToOne(() => Ambiente)
   @JoinColumn({ name: 'ambienteId' })
-  ambiente: Ambiente
+  ambiente?: Ambiente
 
   @Column({ type: 'uuid' })
   ambienteId: string
