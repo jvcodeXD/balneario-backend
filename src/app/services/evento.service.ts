@@ -12,8 +12,8 @@ export class EventoService {
     return await this.eventoRepository.create(data)
   }
 
-  getAll = async () => {
-    return await this.eventoRepository.getAll()
+  getAll = async (filtros: Partial<Evento>) => {
+    return await this.eventoRepository.getAll(filtros)
   }
 
   getById = async (id: string) => {

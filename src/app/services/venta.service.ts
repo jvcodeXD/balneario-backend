@@ -1,30 +1,70 @@
-import { VentaRepository } from '../repositories'
+import { EventoRepository, VentaRepository } from '../repositories'
 import { Venta } from '../entities'
-import { TipoAmbiente, TipoVenta } from '../dtos'
+import { TipoAmbiente, TipoEvento, TipoVenta } from '../dtos'
 
 export class VentaService {
   private ventaRepository: VentaRepository
+  private eventoRepository: EventoRepository
 
   constructor() {
     this.ventaRepository = new VentaRepository()
+    this.eventoRepository = new EventoRepository()
   }
 
-  create = async (data: Partial<Venta>) => {
-    const ahora = new Date()
+  private conflictosConEventos = async (
+    horaInicio: Date,
+    horaFin: Date,
+    ambienteId: string
+  ) => {
+    const filtros: any = {}
+    const eventos = await this.eventoRepository.getAll(filtros) // Puedes adaptar esto según cómo consultes eventos
+    const conflictos = []
 
-    const fechaInicio = new Date(data.horaInicio!)
-    const fechaFin = new Date(data.horaFin!)
+    for (const evento of eventos) {
+      const eventoEsHoy =
+        evento.tipo === 'DIARIO' ||
+        (evento.tipo === 'UNICO' &&
+          new Date(evento.fecha).toDateString() === horaInicio.toDateString())
 
-    // Validar que la hora de finalización no sea anterior al momento actual
-    if (fechaFin <= ahora) {
-      throw new Error('La hora de finalización ya ha pasado.')
+      const aplicaAlAmbiente = evento.ambientes?.some(
+        (amb: any) => amb.id === ambienteId
+      )
+
+      if (eventoEsHoy && aplicaAlAmbiente) {
+        const diario = evento.tipo === TipoEvento.DIARIO
+        const inicioEvento = new Date(diario ? horaInicio : evento.horaInicio)
+        const finEvento = new Date(diario ? horaFin : evento.horaFin)
+        const [h, m] = evento.horaInicio.split(':')
+        inicioEvento.setHours(Number(h), Number(m))
+        const [hf, mf] = evento.horaFin.split(':')
+        finEvento.setHours(Number(hf), Number(mf))
+
+        const haySolapamiento = horaInicio < finEvento && horaFin > inicioEvento
+
+        if (haySolapamiento) {
+          conflictos.push(evento)
+        }
+      }
     }
 
-    // Buscar ventas o reservas activas que se crucen en el mismo ambiente
+    if (conflictos.length > 0) {
+      throw new Error(
+        'Existe un evento registrado en este horario para este ambiente.'
+      )
+    }
+  }
+
+  private conflictosConVentas = async (
+    ambienteId: string,
+    horaInicio: Date,
+    horaFin: Date
+  ): Promise<void> => {
+    const ahora = new Date()
+
     const conflictos = await this.ventaRepository.getConflictos(
-      data.ambienteId!,
-      fechaInicio,
-      fechaFin
+      ambienteId,
+      horaInicio,
+      horaFin
     )
 
     for (const conflicto of conflictos) {
@@ -33,7 +73,6 @@ export class VentaService {
         (ahora.getTime() - new Date(conflicto.horaInicio).getTime()) / 60000
 
       if (esReserva && minutosDesdeInicio >= 5) {
-        // Cancelar la reserva vencida
         await this.ventaRepository.update(conflicto.id, {
           tipo: TipoVenta.CANCELADA
         })
@@ -43,13 +82,30 @@ export class VentaService {
         )
       }
     }
+  }
+
+  create = async (data: Partial<Venta>) => {
+    const ahora = new Date()
+    const fechaInicio = new Date(data.horaInicio!)
+    const fechaFin = new Date(data.horaFin!)
+
+    // Validar que la hora de finalización no sea anterior al momento actual
+    if (fechaFin <= ahora) {
+      throw new Error('La hora de finalización ya ha pasado.')
+    }
+
+    // Verificar conflictos con ventas
+    await this.conflictosConVentas(data.ambienteId!, fechaInicio, fechaFin)
+
+    // Verificar conflictos con eventos
+    await this.conflictosConEventos(fechaInicio, fechaFin, data.ambienteId!)
 
     // Guardar la venta
     return await this.ventaRepository.create(data)
   }
 
-  getAll = async () => {
-    return await this.ventaRepository.getAll()
+  getAll = async (filtros: any) => {
+    return await this.ventaRepository.getAll(filtros)
   }
 
   getById = async (id: string) => {
@@ -60,6 +116,12 @@ export class VentaService {
   }
 
   update = async (id: string, data: Partial<Venta>) => {
+    if (data.tipo === TipoVenta.CANCELADA || data.tipo === TipoVenta.RESTANTE) {
+      return await this.ventaRepository.update(id, {
+        ...data
+      })
+    }
+
     const ahora = new Date()
 
     const fechaInicio = new Date(data.horaInicio!)
@@ -69,6 +131,7 @@ export class VentaService {
       throw new Error('La hora de finalización ya ha pasado.')
     }
 
+    // Verificar conflictos con otras ventas, excluyendo la venta actual
     const conflictos = await this.ventaRepository.getConflictosExcluyendoId(
       id,
       data.ambienteId!,
@@ -92,6 +155,10 @@ export class VentaService {
       }
     }
 
+    // Verificar conflictos con eventos
+    await this.conflictosConEventos(fechaInicio, fechaFin, data.ambienteId!)
+
+    // Guardar la actualización
     return await this.ventaRepository.update(id, {
       ...data,
       updatedAt: ahora

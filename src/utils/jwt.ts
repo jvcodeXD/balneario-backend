@@ -8,7 +8,7 @@ export const generateAccessToken = (userId: string) => {
 }
 
 export const generateRefreshToken = (userId: string) => {
-  return jwt.sign({ id: userId }, REFRESH_SECRET, { expiresIn: '7d' }) // Expira en 7 días
+  return jwt.sign({ id: userId }, REFRESH_SECRET, { expiresIn: '2h' }) // Expira en 2 horas
 }
 
 export const verifyAccessToken = (token: string) => {

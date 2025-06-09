@@ -1,6 +1,7 @@
 import { In, Repository } from 'typeorm'
 import { AppDataSource } from '../../config'
 import { Ambiente, Evento } from '../entities'
+import { TipoEvento } from '../dtos'
 
 export class EventoRepository {
   private repository: Repository<Evento>
@@ -25,10 +26,29 @@ export class EventoRepository {
     return await this.repository.save(evento)
   }
 
-  getAll = async () => {
-    return await this.repository.find({
-      relations: ['ambientes']
-    })
+  getAll = async (filtros: Partial<Evento>) => {
+    const query = this.repository
+      .createQueryBuilder('evento')
+      .leftJoinAndSelect('evento.ambientes', 'ambiente')
+      .where('evento.deletedAt IS NULL')
+
+    // Si se especifica la fecha, filtra eventos UNICO de esa fecha + todos los DIARIO
+    if (filtros.fecha) {
+      query.andWhere(
+        `(evento.tipo = :diario OR (evento.tipo = :unico AND evento.fecha = :fecha))`,
+        {
+          diario: TipoEvento.DIARIO,
+          unico: TipoEvento.UNICO,
+          fecha: filtros.fecha
+        }
+      )
+    }
+
+    if (filtros.tipo) {
+      query.andWhere('evento.tipo = :tipoFiltro', { tipoFiltro: filtros.tipo })
+    }
+
+    return await query.getMany()
   }
 
   getById = async (id: string) => {

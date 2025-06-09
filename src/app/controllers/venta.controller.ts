@@ -16,7 +16,10 @@ export const VentaController = {
 
   getAll: async (req: Request, res: Response) => {
     try {
-      const ventas = await service.getAll()
+      const filtros: any = {}
+      if (req.query.fecha) filtros.fecha = req.query.fecha
+      if (req.query.tipo) filtros.tipo = req.query.tipo
+      const ventas = await service.getAll(filtros)
       res.json(ventas)
     } catch (error: any) {
       res.status(400).json({ error: error.message })

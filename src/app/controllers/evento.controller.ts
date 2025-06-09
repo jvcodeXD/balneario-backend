@@ -15,9 +15,12 @@ export const EventoController = {
     }
   },
 
-  getAll: async (_req: Request, res: Response) => {
+  getAll: async (req: Request, res: Response) => {
     try {
-      const eventos = await service.getAll()
+      const filtros: any = {}
+      if (req.query.fecha) filtros.fecha = req.query.fecha
+      if (req.query.tipo) filtros.tipo = req.query.tipo
+      const eventos = await service.getAll(filtros)
       res.json(eventos)
     } catch (error: any) {
       res.status(400).json({ error: error.message })

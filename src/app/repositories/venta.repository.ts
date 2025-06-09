@@ -45,11 +45,27 @@ export class VentaRepository {
     })
   }
 
-  getAll = async () => {
-    return await this.repository.find({
-      where: { tipo: Not(In([TipoVenta.CANCELADA, TipoVenta.FINALIZADA])) },
-      relations: ['ambiente', 'usuario']
-    })
+  getAll = async (filtros: any) => {
+    const query = this.repository
+      .createQueryBuilder('venta')
+      .leftJoinAndSelect('venta.ambiente', 'ambiente')
+      .leftJoinAndSelect('venta.usuario', 'usuario')
+      .where('venta.deletedAt IS NULL')
+      .andWhere('venta.tipo NOT IN (:...tiposExcluidos)', {
+        tiposExcluidos: [TipoVenta.CANCELADA, TipoVenta.FINALIZADA]
+      })
+
+    if (filtros.fecha) {
+      query.andWhere('venta.fecha::date = :fecha', { fecha: filtros.fecha })
+    }
+
+    if (filtros.tipo) {
+      query.andWhere('ambiente.tipo = :tipoAmbiente', {
+        tipoAmbiente: filtros.tipo
+      })
+    }
+
+    return await query.getMany()
   }
 
   getVentasByFecha = async (fecha: string, tipo?: TipoAmbiente) => {
