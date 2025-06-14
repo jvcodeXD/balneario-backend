@@ -44,8 +44,6 @@ export const generarReciboPiscina = async (
   doc.moveDown(0.5)
 
   // Línea superior
-  const pageWidth =
-    doc.page.width - doc.page.margins.left - doc.page.margins.right
   doc.moveDown(0.3)
   doc
     .moveTo(doc.page.margins.left, doc.y)
@@ -129,13 +127,11 @@ export const generarReciboPDF = async (res: Response, id: string) => {
   doc.moveDown(0.2)
 
   // Fecha
-  const fecha = format(new Date(venta.fecha), 'dd/MM/yyyy HH:mm')
+  const fecha = format(new Date(venta.created_at), 'dd/MM/yyyy HH:mm')
   doc.fontSize(7).text(`Fecha: ${fecha}`, { align: 'center' })
   doc.moveDown(0.5)
 
   // Línea superior
-  const pageWidth =
-    doc.page.width - doc.page.margins.left - doc.page.margins.right
   doc.moveDown(0.3)
   doc
     .moveTo(doc.page.margins.left, doc.y)

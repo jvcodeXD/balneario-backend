@@ -54,11 +54,11 @@ export class Venta {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   adelanto: number
 
-  @CreateDateColumn()
-  fecha: Date
+  @Column({ type: 'timestamp' })
+  created_at: Date
 
-  @UpdateDateColumn()
-  updatedAt: Date
+  @Column({ type: 'timestamp' })
+  updated_at: Date
 
   @DeleteDateColumn()
   deletedAt?: Date

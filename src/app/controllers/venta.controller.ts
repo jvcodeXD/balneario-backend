@@ -8,6 +8,7 @@ export const VentaController = {
   create: async (req: Request, res: Response) => {
     try {
       const venta = await service.create(req.body)
+      console.log(venta)
       res.status(201).json(venta)
     } catch (error: any) {
       res.status(400).json({ error: error.message })

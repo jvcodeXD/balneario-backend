@@ -1,13 +1,19 @@
-import { EventoRepository, VentaRepository } from '../repositories'
+import {
+  AmbienteRepository,
+  EventoRepository,
+  VentaRepository
+} from '../repositories'
 import { Venta } from '../entities'
 import { TipoAmbiente, TipoEvento, TipoVenta } from '../dtos'
 
 export class VentaService {
   private ventaRepository: VentaRepository
+  private ambienteRepository: AmbienteRepository
   private eventoRepository: EventoRepository
 
   constructor() {
     this.ventaRepository = new VentaRepository()
+    this.ambienteRepository = new AmbienteRepository()
     this.eventoRepository = new EventoRepository()
   }
 
@@ -89,18 +95,18 @@ export class VentaService {
     const fechaInicio = new Date(data.horaInicio!)
     const fechaFin = new Date(data.horaFin!)
 
-    // Validar que la hora de finalización no sea anterior al momento actual
-    if (fechaFin <= ahora) {
-      throw new Error('La hora de finalización ya ha pasado.')
+    const ambiente = await this.ambienteRepository.findOne({
+      id: data.ambienteId!
+    })
+    if (ambiente && ambiente.tipo !== TipoAmbiente.SAUNA_MIXTO) {
+      if (fechaFin <= ahora) {
+        throw new Error('La hora de finalización ya ha pasado.')
+      }
+
+      await this.conflictosConVentas(data.ambienteId!, fechaInicio, fechaFin)
+      await this.conflictosConEventos(fechaInicio, fechaFin, data.ambienteId!)
     }
 
-    // Verificar conflictos con ventas
-    await this.conflictosConVentas(data.ambienteId!, fechaInicio, fechaFin)
-
-    // Verificar conflictos con eventos
-    await this.conflictosConEventos(fechaInicio, fechaFin, data.ambienteId!)
-
-    // Guardar la venta
     return await this.ventaRepository.create(data)
   }
 
@@ -161,7 +167,7 @@ export class VentaService {
     // Guardar la actualización
     return await this.ventaRepository.update(id, {
       ...data,
-      updatedAt: ahora
+      updated_at: ahora
     })
   }
 
@@ -171,5 +177,17 @@ export class VentaService {
 
   getVentasByFecha = async (fecha: string, tipo?: TipoAmbiente) => {
     return await this.ventaRepository.getVentasByFecha(fecha, tipo)
+  }
+
+  getVentasByUsuario = async (
+    fechaInicio: Date,
+    fechaFin: Date,
+    idUsuario: string
+  ) => {
+    return await this.ventaRepository.getVentasByUsuario(
+      fechaInicio,
+      fechaFin,
+      idUsuario
+    )
   }
 }

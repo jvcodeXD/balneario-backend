@@ -2,6 +2,7 @@ import { Repository, Not, In, LessThan, MoreThan, IsNull } from 'typeorm'
 import { AppDataSource, logger } from '../../config'
 import { Venta } from '../entities'
 import { TipoAmbiente, TipoVenta } from '../dtos'
+import { DateHelper } from '../../utils'
 
 export class VentaRepository {
   private repository: Repository<Venta>
@@ -11,7 +12,15 @@ export class VentaRepository {
   }
 
   create = async (data: Partial<Venta>) => {
-    const venta = this.repository.create(data)
+    // const ahora = DateHelper.getLocalDate()
+    const ahora = new Date()
+
+    const venta = this.repository.create({
+      ...data,
+      created_at: ahora,
+      updated_at: ahora
+    })
+
     return await this.repository.save(venta)
   }
 
@@ -56,7 +65,9 @@ export class VentaRepository {
       })
 
     if (filtros.fecha) {
-      query.andWhere('venta.fecha::date = :fecha', { fecha: filtros.fecha })
+      query.andWhere('venta.created_at::date = :fecha', {
+        fecha: filtros.fecha
+      })
     }
 
     if (filtros.tipo) {
@@ -100,33 +111,47 @@ export class VentaRepository {
   }
 
   update = async (id: string, data: Partial<Venta>) => {
-    const venta = await this.repository.findOne({
-      where: { id }
-    })
+    const venta = await this.repository.findOne({ where: { id } })
 
     if (!venta) return null
 
+    // const ahora = DateHelper.getLocalDate()
+    const ahora = new Date()
+
     if (data.tipo === TipoVenta.RESTANTE) {
-      const { id, fecha, updatedAt, ...rest } = venta
+      const {
+        id,
+        created_at: created_at,
+        updated_at: updated_at,
+        ...rest
+      } = venta
+
       const nuevaVenta = this.repository.create({
         ...rest,
+        tipo: data.tipo || venta.tipo,
         usuarioId: data.usuarioId || venta.usuarioId,
-        tipo: data.tipo || venta.tipo
+        created_at: ahora,
+        updated_at: ahora
       })
+
       venta.tipo = TipoVenta.FINALIZADA
+      venta.updated_at = ahora
       await this.repository.save(venta)
+
       return await this.repository.save(nuevaVenta)
     } else {
       const {
         ambiente,
         usuario,
         id,
-        fecha,
-        updatedAt,
+        created_at,
+        updated_at,
         deletedAt,
         ...camposLimpiados
       } = data
+
       Object.assign(venta, camposLimpiados)
+      venta.updated_at = ahora
 
       return await this.repository.save(venta)
     }
@@ -137,5 +162,22 @@ export class VentaRepository {
     if (!venta) return false
     await this.repository.save(venta)
     return true
+  }
+
+  getVentasByUsuario = async (
+    fechaInicio: Date,
+    fechaFin: Date,
+    idUsuario: string
+  ) => {
+    return await this.repository
+      .createQueryBuilder('venta')
+      .leftJoinAndSelect('venta.ambiente', 'ambiente')
+      .where('venta.created_at BETWEEN :inicio AND :fin', {
+        inicio: fechaInicio,
+        fin: fechaFin
+      })
+      .andWhere('venta.usuarioId = :idUsuario', { idUsuario })
+      .orderBy('venta.updated_at', 'ASC') // <-- Aquí agregamos el orden
+      .getMany()
   }
 }
