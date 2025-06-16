@@ -76,7 +76,7 @@ export class VentaService {
     for (const conflicto of conflictos) {
       const esReserva = conflicto.tipo === 'RESERVADA'
       const minutosDesdeInicio =
-        (ahora.getTime() - new Date(conflicto.horaInicio).getTime()) / 60000
+        (ahora.getTime() - new Date(conflicto.hora_inicio).getTime()) / 60000
 
       if (esReserva && minutosDesdeInicio >= 5) {
         await this.ventaRepository.update(conflicto.id, {
@@ -92,7 +92,7 @@ export class VentaService {
 
   create = async (data: Partial<Venta>) => {
     const ahora = new Date()
-    const fechaInicio = new Date(data.horaInicio!)
+    const fechaInicio = new Date(data.hora_inicio!)
     const fechaFin = new Date(data.horaFin!)
 
     const ambiente = await this.ambienteRepository.findOne({
@@ -130,7 +130,7 @@ export class VentaService {
 
     const ahora = new Date()
 
-    const fechaInicio = new Date(data.horaInicio!)
+    const fechaInicio = new Date(data.hora_inicio!)
     const fechaFin = new Date(data.horaFin!)
 
     if (fechaFin <= ahora) {
@@ -148,7 +148,7 @@ export class VentaService {
     for (const conflicto of conflictos) {
       const esReserva = conflicto.tipo === TipoVenta.RESERVADA
       const minutosDesdeInicio =
-        (ahora.getTime() - new Date(conflicto.horaInicio).getTime()) / 60000
+        (ahora.getTime() - new Date(conflicto.hora_inicio).getTime()) / 60000
 
       if (esReserva && minutosDesdeInicio >= 5) {
         await this.ventaRepository.update(conflicto.id, {

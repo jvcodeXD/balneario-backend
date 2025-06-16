@@ -145,7 +145,7 @@ export const generarReciboPDF = async (res: Response, id: string) => {
   const datos = [
     ['Cliente:', venta.nombreCliente || 'N/A'],
     ['Ambiente:', venta.ambiente?.nombre || 'N/A'],
-    ['Hora Inicio:', format(new Date(venta.horaInicio), 'HH:mm')],
+    ['Hora Inicio:', format(new Date(venta.hora_inicio), 'HH:mm')],
     ['Hora Fin:', format(new Date(venta.horaFin), 'HH:mm')]
   ]
   if (venta.tipo === TipoVenta.RESERVADA) {

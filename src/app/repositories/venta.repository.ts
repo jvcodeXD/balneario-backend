@@ -30,7 +30,7 @@ export class VentaRepository {
         ambienteId: ambienteId,
         deletedAt: IsNull(),
         tipo: Not(In(['CANCELADA', 'FINALIZADA'])),
-        horaInicio: LessThan(fin),
+        hora_inicio: LessThan(fin),
         horaFin: MoreThan(inicio)
       }
     })
@@ -48,7 +48,7 @@ export class VentaRepository {
         ambienteId: ambienteId,
         deletedAt: IsNull(),
         tipo: Not(In(['CANCELADA', 'FINALIZADA'])),
-        horaInicio: LessThan(horaFin),
+        hora_inicio: LessThan(horaFin),
         horaFin: MoreThan(horaInicio)
       }
     })
@@ -65,7 +65,7 @@ export class VentaRepository {
       })
 
     if (filtros.fecha) {
-      query.andWhere('venta.created_at::date = :fecha', {
+      query.andWhere('venta.hora_inicio::date = :fecha', {
         fecha: filtros.fecha
       })
     }
@@ -89,7 +89,7 @@ export class VentaRepository {
       .addSelect('ambiente.nombre', 'nombreAmbiente')
       .addSelect('ambiente.tipo', 'tipoAmbiente')
       .addSelect('SUM(venta.cantidad)', 'cantidad')
-      .where('venta.horaInicio BETWEEN :inicio AND :fin', { inicio, fin })
+      .where('venta.hora_inicio BETWEEN :inicio AND :fin', { inicio, fin })
 
     if (tipo) {
       query.andWhere('ambiente.tipo = :tipo', { tipo })

@@ -20,7 +20,7 @@ export class Venta {
   tipo: TipoVenta
 
   @Column({ type: 'timestamp' })
-  horaInicio: Date
+  hora_inicio: Date
 
   @Column({ type: 'timestamp' })
   horaFin: Date
