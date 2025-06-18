@@ -1,6 +1,8 @@
 import { TipoReporteUsuario } from '../dtos'
+import { reporteDiarioUsuarioPDF } from './pdf.service'
 import { UserService } from './user.service'
 import { VentaService } from './venta.service'
+import { Response } from 'express'
 
 export class ReporteService {
   private userService: UserService
@@ -26,5 +28,19 @@ export class ReporteService {
       usuario,
       ventas
     }
+  }
+
+  reporteDiarioUsuarioPDF = async (
+    res: Response,
+    fechaInicio: Date,
+    fechaFin: Date,
+    idUsuario: string
+  ) => {
+    const ventas = await this.ventaService.getVentasByUsuario(
+      fechaInicio,
+      fechaFin,
+      idUsuario
+    )
+    reporteDiarioUsuarioPDF(res, idUsuario, ventas, fechaInicio, fechaFin)
   }
 }

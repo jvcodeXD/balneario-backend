@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { ReporteService } from '../services'
 import { logger } from '../../config'
+import { reporteDiarioUsuarioPDF } from '../services/pdf.service'
 
 const service = new ReporteService()
 
@@ -15,6 +16,15 @@ export const ReporteController = {
         idUsuario
       )
       res.json(reporte)
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  reporteDiarioUsuarioPDF: async (req: Request, res: Response) => {
+    try {
+      const { idUsuario, fechaInicio, fechaFin } = req.body
+      service.reporteDiarioUsuarioPDF(res, fechaInicio, fechaFin, idUsuario)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
