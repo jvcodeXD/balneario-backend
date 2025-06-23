@@ -43,4 +43,11 @@ export class ReporteService {
     )
     reporteDiarioUsuarioPDF(res, idUsuario, ventas, fechaInicio, fechaFin)
   }
+
+  reporteVentasTipoAmbiente = async (fechaInicio: Date, fechaFin: Date) => {
+    return await this.ventaService.reporteVentasTipoAmbiente(
+      fechaInicio,
+      fechaFin
+    )
+  }
 }

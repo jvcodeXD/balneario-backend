@@ -180,4 +180,48 @@ export class VentaRepository {
       .orderBy('venta.updated_at', 'ASC') // <-- Aquí agregamos el orden
       .getMany()
   }
+
+  reporteVentasTipoAmbiente = async (fechaInicio: Date, fechaFin: Date) => {
+    const result = await AppDataSource.getRepository(Venta)
+      .createQueryBuilder('venta')
+      .leftJoin('venta.ambiente', 'ambiente')
+      .select([
+        'DATE(venta.created_at) as fecha',
+        'ambiente.tipo',
+        `
+      SUM(
+        CASE
+          WHEN venta.tipo = 'CANCELADA' THEN -COALESCE(venta.adelanto, 0)
+          WHEN venta.tipo = 'RESERVADA' THEN COALESCE(venta.adelanto, 0)
+          WHEN venta.tipo = 'FINALIZADA' THEN COALESCE(venta.adelanto, 0)
+          WHEN venta.tipo = 'RESTANTE' THEN COALESCE(venta.precioTotal, 0) - COALESCE(venta.adelanto, 0)
+          ELSE COALESCE(venta.precioTotal, 0)
+        END
+      ) as total
+      `
+      ])
+      .where('venta.created_at BETWEEN :inicio AND :fin', {
+        inicio: fechaInicio,
+        fin: fechaFin
+      })
+      .groupBy('fecha')
+      .addGroupBy('ambiente.tipo')
+      .orderBy('fecha', 'ASC')
+      .addOrderBy('ambiente.tipo', 'ASC')
+      .getRawMany()
+
+    // Reorganizar: Agrupar por fecha
+    const agrupado: Record<string, { tipo: string; total: number }[]> = {}
+
+    result.forEach((r) => {
+      const fecha = r.fecha
+      const tipo = r.ambiente_tipo
+      const total = Number(r.total)
+
+      if (!agrupado[fecha]) agrupado[fecha] = []
+      agrupado[fecha].push({ tipo, total })
+    })
+
+    return agrupado
+  }
 }

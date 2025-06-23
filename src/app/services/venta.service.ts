@@ -190,4 +190,11 @@ export class VentaService {
       idUsuario
     )
   }
+
+  reporteVentasTipoAmbiente = async (fechaInicio: Date, fechaFin: Date) => {
+    return await this.ventaRepository.reporteVentasTipoAmbiente(
+      fechaInicio,
+      fechaFin
+    )
+  }
 }

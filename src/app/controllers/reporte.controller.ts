@@ -28,5 +28,18 @@ export const ReporteController = {
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
+  },
+
+  reporteVentasTipoAmbiente: async (req: Request, res: Response) => {
+    try {
+      const { fechaInicio, fechaFin } = req.body
+      const ventas = await service.reporteVentasTipoAmbiente(
+        fechaInicio,
+        fechaFin
+      )
+      res.json(ventas)
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
   }
 }
