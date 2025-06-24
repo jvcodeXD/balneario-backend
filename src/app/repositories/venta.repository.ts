@@ -1,6 +1,6 @@
 import { Repository, Not, In, LessThan, MoreThan, IsNull } from 'typeorm'
 import { AppDataSource, logger } from '../../config'
-import { Venta } from '../entities'
+import { Venta, User } from '../entities'
 import { TipoAmbiente, TipoVenta } from '../dtos'
 import { DateHelper } from '../../utils'
 
@@ -24,32 +24,32 @@ export class VentaRepository {
     return await this.repository.save(venta)
   }
 
-  getConflictos = async (ambienteId: string, inicio: Date, fin: Date) => {
+  getConflictos = async (ambiente_id: string, inicio: Date, fin: Date) => {
     return await this.repository.find({
       where: {
-        ambienteId: ambienteId,
-        deletedAt: IsNull(),
+        ambiente_id,
+        deleted_at: IsNull(),
         tipo: Not(In(['CANCELADA', 'FINALIZADA'])),
         hora_inicio: LessThan(fin),
-        horaFin: MoreThan(inicio)
+        hora_fin: MoreThan(inicio)
       }
     })
   }
 
   getConflictosExcluyendoId = async (
     id: string,
-    ambienteId: string,
-    horaInicio: Date,
-    horaFin: Date
+    ambiente_id: string,
+    hora_inicio: Date,
+    hora_fin: Date
   ) => {
     return await this.repository.find({
       where: {
         id: Not(id),
-        ambienteId: ambienteId,
-        deletedAt: IsNull(),
+        ambiente_id,
+        deleted_at: IsNull(),
         tipo: Not(In(['CANCELADA', 'FINALIZADA'])),
-        hora_inicio: LessThan(horaFin),
-        horaFin: MoreThan(horaInicio)
+        hora_inicio: LessThan(hora_fin),
+        hora_fin: MoreThan(hora_inicio)
       }
     })
   }
@@ -59,7 +59,7 @@ export class VentaRepository {
       .createQueryBuilder('venta')
       .leftJoinAndSelect('venta.ambiente', 'ambiente')
       .leftJoinAndSelect('venta.usuario', 'usuario')
-      .where('venta.deletedAt IS NULL')
+      .where('venta.deleted_at IS NULL')
       .andWhere('venta.tipo NOT IN (:...tiposExcluidos)', {
         tiposExcluidos: [TipoVenta.CANCELADA, TipoVenta.FINALIZADA]
       })
@@ -85,9 +85,9 @@ export class VentaRepository {
     const query = this.repository
       .createQueryBuilder('venta')
       .leftJoin('venta.ambiente', 'ambiente')
-      .select('venta.ambienteId', 'ambienteId')
-      .addSelect('ambiente.nombre', 'nombreAmbiente')
-      .addSelect('ambiente.tipo', 'tipoAmbiente')
+      .select('venta.ambiente_id', 'ambiente_id')
+      .addSelect('ambiente.nombre', 'nombre_ambiente')
+      .addSelect('ambiente.tipo', 'tipo_ambiente')
       .addSelect('SUM(venta.cantidad)', 'cantidad')
       .where('venta.hora_inicio BETWEEN :inicio AND :fin', { inicio, fin })
 
@@ -96,7 +96,7 @@ export class VentaRepository {
     }
 
     const ventas = await query
-      .groupBy('venta.ambienteId')
+      .groupBy('venta.ambiente_id')
       .addGroupBy('ambiente.nombre')
       .addGroupBy('ambiente.tipo')
       .getRawMany()
@@ -129,7 +129,7 @@ export class VentaRepository {
       const nuevaVenta = this.repository.create({
         ...rest,
         tipo: data.tipo || venta.tipo,
-        usuarioId: data.usuarioId || venta.usuarioId,
+        usuario_id: data.usuario_id || venta.usuario_id,
         created_at: ahora,
         updated_at: ahora
       })
@@ -146,7 +146,7 @@ export class VentaRepository {
         id,
         created_at,
         updated_at,
-        deletedAt,
+        deleted_at,
         ...camposLimpiados
       } = data
 
@@ -176,7 +176,7 @@ export class VentaRepository {
         inicio: fechaInicio,
         fin: fechaFin
       })
-      .andWhere('venta.usuarioId = :idUsuario', { idUsuario })
+      .andWhere('venta.usuario_id = :idUsuario', { idUsuario })
       .orderBy('venta.updated_at', 'ASC') // <-- Aquí agregamos el orden
       .getMany()
   }
@@ -194,8 +194,8 @@ export class VentaRepository {
           WHEN venta.tipo = 'CANCELADA' THEN -COALESCE(venta.adelanto, 0)
           WHEN venta.tipo = 'RESERVADA' THEN COALESCE(venta.adelanto, 0)
           WHEN venta.tipo = 'FINALIZADA' THEN COALESCE(venta.adelanto, 0)
-          WHEN venta.tipo = 'RESTANTE' THEN COALESCE(venta.precioTotal, 0) - COALESCE(venta.adelanto, 0)
-          ELSE COALESCE(venta.precioTotal, 0)
+          WHEN venta.tipo = 'RESTANTE' THEN COALESCE(venta.precio_total, 0) - COALESCE(venta.adelanto, 0)
+          ELSE COALESCE(venta.precio_total, 0)
         END
       ) as total
       `
@@ -223,5 +223,35 @@ export class VentaRepository {
     })
 
     return agrupado
+  }
+
+  reporteVentasUsuario = async (fechaInicio: Date, fechaFin: Date) => {
+    const repo = AppDataSource.getRepository(Venta)
+
+    const ventas = await repo
+      .createQueryBuilder('venta')
+      .select(`DATE(venta.created_at)`, 'fecha')
+      .addSelect('venta.usuario_id', 'usuario_id')
+      .addSelect('user.fullname', 'fullname')
+      .addSelect('SUM(venta.precio_total)', 'total_ventas')
+      .addSelect('SUM(venta.cantidad)', 'cantidad_ventas')
+      .innerJoin('user', 'user', 'user.id = venta.usuario_id')
+      .where('venta.created_at BETWEEN :inicio AND :fin', {
+        inicio: fechaInicio,
+        fin: fechaFin
+      })
+      .andWhere('user.deleted_at IS NULL')
+      .groupBy(`DATE(venta.created_at), venta.usuario_id, user.fullname`)
+      .orderBy('fecha', 'ASC')
+      .addOrderBy('total_ventas', 'DESC')
+      .getRawMany()
+
+    return ventas.map((v) => ({
+      fecha: v.fecha,
+      usuario_id: v.usuario_id,
+      fullname: v.fullname,
+      total_ventas: Number(v.total_ventas),
+      cantidad_ventas: Number(v.cantidad_ventas)
+    }))
   }
 }

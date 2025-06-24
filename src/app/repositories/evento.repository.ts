@@ -30,7 +30,7 @@ export class EventoRepository {
     const query = this.repository
       .createQueryBuilder('evento')
       .leftJoinAndSelect('evento.ambientes', 'ambiente')
-      .where('evento.deletedAt IS NULL')
+      .where('evento.deleted_at IS NULL')
 
     // Si se especifica la fecha, filtra eventos UNICO de esa fecha + todos los DIARIO
     if (filtros.fecha) {

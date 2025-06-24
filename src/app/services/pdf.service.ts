@@ -87,7 +87,7 @@ export const generarReciboPiscina = async (
   doc
     .fontSize(5)
     .font('Helvetica-Oblique')
-    .text('Atendido por: ' + (usuario?.fullName || 'N/A'), {
+    .text('Atendido por: ' + (usuario?.fullname || 'N/A'), {
       align: 'right'
     })
 
@@ -143,10 +143,10 @@ export const generarReciboPDF = async (res: Response, id: string) => {
   doc.fontSize(9)
 
   const datos = [
-    ['Cliente:', venta.nombreCliente || 'N/A'],
+    ['Cliente:', venta.nombre_cliente || 'N/A'],
     ['Ambiente:', venta.ambiente?.nombre || 'N/A'],
     ['Hora Inicio:', format(new Date(venta.hora_inicio), 'HH:mm')],
-    ['Hora Fin:', format(new Date(venta.horaFin), 'HH:mm')]
+    ['Hora Fin:', format(new Date(venta.hora_fin), 'HH:mm')]
   ]
   if (venta.tipo === TipoVenta.RESERVADA) {
     datos.push(['Adelanto:', `${venta.adelanto} Bs`])
@@ -157,7 +157,7 @@ export const generarReciboPDF = async (res: Response, id: string) => {
     venta.ambiente.tipo !== TipoAmbiente.SAUNA
   )
     datos.push(['Personas:', venta.cantidad.toString()])
-  datos.push(['Total:', `${venta.precioTotal} Bs`])
+  datos.push(['Total:', `${venta.precio_total} Bs`])
 
   const startX = doc.x
   const col1Width = 60
@@ -186,7 +186,7 @@ export const generarReciboPDF = async (res: Response, id: string) => {
   doc
     .fontSize(5)
     .font('Helvetica-Oblique')
-    .text('Atendido por: ' + (venta.usuario?.fullName || 'N/A'), {
+    .text('Atendido por: ' + (venta.usuario?.fullname || 'N/A'), {
       align: 'right'
     })
 
@@ -263,7 +263,7 @@ const seccionSaunaMixto = (
         format(new Date(venta.created_at!), 'HH:mm'),
         format(new Date(venta.hora_inicio), 'HH:mm'),
         cantidadStr,
-        `${Number(venta.precioTotal).toFixed(2)} Bs`,
+        `${Number(venta.precio_total).toFixed(2)} Bs`,
         `${Number(recibido).toFixed(2)} Bs`
       ]
 
@@ -348,7 +348,7 @@ const seccionSauna = (
     agrupado[fecha].forEach((venta) => {
       if (doc.y + 20 > doc.page.height - doc.page.margins.bottom) doc.addPage()
       const adelanto = Number(venta.adelanto ?? 0)
-      const totalBs = Number(venta.precioTotal ?? 0)
+      const totalBs = Number(venta.precio_total ?? 0)
       const recibido = calcularRecibido(venta)
 
       const fila = [
@@ -356,7 +356,7 @@ const seccionSauna = (
         `${format(new Date(venta.hora_inicio), 'yyyy-MM-dd')} (${format(
           new Date(venta.hora_inicio),
           'HH:mm'
-        )} - ${format(new Date(venta.horaFin), 'HH:mm')})`,
+        )} - ${format(new Date(venta.hora_fin), 'HH:mm')})`,
         textoVenta(venta),
         `${adelanto.toFixed(2)} Bs`,
         `${totalBs.toFixed(2)} Bs`,
@@ -439,7 +439,7 @@ const seccionFamiliar = (
     agrupado[fecha].forEach((venta) => {
       if (doc.y + 20 > doc.page.height - doc.page.margins.bottom) doc.addPage()
       const adelanto = Number(venta.adelanto ?? 0)
-      const totalBs = Number(venta.precioTotal ?? 0)
+      const totalBs = Number(venta.precio_total ?? 0)
       const recibido = calcularRecibido(venta)
 
       const fila = [
@@ -447,7 +447,7 @@ const seccionFamiliar = (
         `${format(new Date(venta.hora_inicio), 'yyyy-MM-dd')} (${format(
           new Date(venta.hora_inicio),
           'HH:mm'
-        )} - ${format(new Date(venta.horaFin), 'HH:mm')})`,
+        )} - ${format(new Date(venta.hora_fin), 'HH:mm')})`,
         textoVenta(venta),
         `${Number(adelanto).toFixed(2)} Bs`,
         `${Number(totalBs).toFixed(2)} Bs`,
@@ -534,7 +534,7 @@ const seccionIndividual = (
     agrupado[fecha].forEach((venta) => {
       if (doc.y + 20 > doc.page.height - doc.page.margins.bottom) doc.addPage()
       const adelanto = Number(venta.adelanto ?? 0)
-      const totalBs = Number(venta.precioTotal ?? 0)
+      const totalBs = Number(venta.precio_total ?? 0)
       const recibido = calcularRecibido(venta)
 
       const fila = [
@@ -542,7 +542,7 @@ const seccionIndividual = (
         `${format(new Date(venta.hora_inicio), 'yyyy-MM-dd')} (${format(
           new Date(venta.hora_inicio),
           'HH:mm'
-        )} - ${format(new Date(venta.horaFin), 'HH:mm')})`,
+        )} - ${format(new Date(venta.hora_fin), 'HH:mm')})`,
         textoVenta(venta),
         `${venta.cantidad ?? 1}`,
         `${Number(adelanto).toFixed(2)} Bs`,
@@ -604,7 +604,7 @@ export const reporteDiarioUsuarioPDF = async (
     .font('Helvetica-Bold')
     .text('REPORTE DE VENTAS', { align: 'center' })
   doc.moveDown(0.5)
-  doc.fontSize(10).text(`Usuario: ${usuario?.fullName || 'N/A'}`)
+  doc.fontSize(10).text(`Usuario: ${usuario?.fullname || 'N/A'}`)
   doc.text(
     `Periodo: ${format(fechaInicio, 'yyyy-MM-dd')} al ${format(
       fechaFin,
@@ -719,6 +719,6 @@ const calcularRecibido = (venta: VentaInterface): number => {
   if (venta.tipo === TipoVenta.RESERVADA || venta.tipo === TipoVenta.FINALIZADA)
     return venta.adelanto ?? 0
   if (venta.tipo === TipoVenta.RESTANTE)
-    return (venta.precioTotal ?? 0) - (venta.adelanto ?? 0)
-  return venta.precioTotal ?? 0
+    return (venta.precio_total ?? 0) - (venta.adelanto ?? 0)
+  return venta.precio_total ?? 0
 }

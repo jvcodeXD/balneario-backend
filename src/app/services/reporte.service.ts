@@ -50,4 +50,8 @@ export class ReporteService {
       fechaFin
     )
   }
+
+  reporteIngresoUsuarios = async (fechaInicio: Date, fechaFin: Date) => {
+    return await this.ventaService.reporteVentasUsuario(fechaInicio, fechaFin)
+  }
 }

@@ -23,33 +23,33 @@ export class Venta {
   hora_inicio: Date
 
   @Column({ type: 'timestamp' })
-  horaFin: Date
+  hora_fin: Date
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  precioTotal: number
+  precio_total: number
 
   @Column({ type: 'int' })
   cantidad: number
 
   @Column({ default: '' })
-  nombreCliente: string
+  nombre_cliente: string
 
   @Column({ default: '' })
-  celularCliente: string
+  celular_cliente: string
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'usuarioId' })
+  @JoinColumn({ name: 'usuario_id' })
   usuario: User
 
   @Column({ type: 'uuid' })
-  usuarioId: string
+  usuario_id: string
 
   @ManyToOne(() => Ambiente)
-  @JoinColumn({ name: 'ambienteId' })
+  @JoinColumn({ name: 'ambiente_id' })
   ambiente?: Ambiente
 
   @Column({ type: 'uuid' })
-  ambienteId: string
+  ambiente_id: string
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   adelanto: number
@@ -61,5 +61,5 @@ export class Venta {
   updated_at: Date
 
   @DeleteDateColumn()
-  deletedAt?: Date
+  deleted_at?: Date
 }

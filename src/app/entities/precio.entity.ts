@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  OneToMany
+} from 'typeorm'
 import { Ambiente } from '.'
-
 
 @Entity()
 export class Precio {
@@ -10,19 +17,18 @@ export class Precio {
   @Column({ default: '' })
   tipo: string
 
-  @Column('decimal', { precision: 10, scale: 2 , default: 0 })
+  @Column('decimal', { precision: 10, scale: 2, default: 0 })
   precio: number
 
   @CreateDateColumn()
-  createdAt: Date
+  created_at: Date
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updated_at: Date
 
   @DeleteDateColumn()
-  deletedAt?: Date
+  deleted_at?: Date
 
   @OneToMany(() => Ambiente, (ambiente) => ambiente.precio)
   ambientes: Ambiente[]
-
 }

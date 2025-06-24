@@ -16,7 +16,7 @@ export class AmbienteRepository {
 
   getAll = async (filtros: Partial<Ambiente>) => {
     const where: any = {
-      deletedAt: null
+      deleted_at: null
     }
     if (filtros.tipo) {
       where.tipo = filtros.tipo

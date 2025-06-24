@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm'
+import { Repository, IsNull } from 'typeorm'
 import { AppDataSource } from '../../config'
 import { User } from '../entities'
 
@@ -15,16 +15,18 @@ export class UserRepository {
   }
 
   getAll = async () => {
-    return await this.repository.find({ where: { isDeleted: false } })
+    return await this.repository.find({ where: { deleted_at: IsNull() } })
   }
 
   getById = async (id: string) => {
-    return await this.repository.findOne({ where: { id, isDeleted: false } })
+    return await this.repository.findOne({
+      where: { id, deleted_at: IsNull() }
+    })
   }
 
   update = async (id: string, updateData: Partial<User>) => {
     const user = await this.repository.findOne({
-      where: { id, isDeleted: false }
+      where: { id, deleted_at: IsNull() }
     })
     if (!user) return null
     Object.assign(user, updateData)
@@ -34,8 +36,7 @@ export class UserRepository {
   delete = async (id: string) => {
     const user = await this.repository.findOne({ where: { id } })
     if (!user) return false
-    user.isDeleted = true
-    await this.repository.save(user)
+    await this.repository.softDelete(id)
     return true
   }
 }

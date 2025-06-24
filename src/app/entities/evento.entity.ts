@@ -26,10 +26,10 @@ export class Evento {
   fecha: Date // Solo para tipo UNICO
 
   @Column({ type: 'time' })
-  horaInicio: string
+  hora_inicio: string
 
   @Column({ type: 'time' })
-  horaFin: string
+  hora_fin: string
 
   @Column({
     type: 'enum',
@@ -44,17 +44,17 @@ export class Evento {
   @ManyToMany(() => Ambiente)
   @JoinTable({
     name: 'evento_ambiente',
-    joinColumn: { name: 'eventoId' },
-    inverseJoinColumn: { name: 'ambienteId' }
+    joinColumn: { name: 'evento_id' },
+    inverseJoinColumn: { name: 'ambiente_id' }
   })
   ambientes: Ambiente[]
 
   @CreateDateColumn()
-  createdAt: Date
+  created_at: Date
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updated_at: Date
 
   @DeleteDateColumn()
-  deletedAt?: Date
+  deleted_at?: Date
 }

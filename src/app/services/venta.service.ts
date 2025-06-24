@@ -18,8 +18,8 @@ export class VentaService {
   }
 
   private conflictosConEventos = async (
-    horaInicio: Date,
-    horaFin: Date,
+    hora_inicio: Date,
+    hora_fin: Date,
     ambienteId: string
   ) => {
     const filtros: any = {}
@@ -30,7 +30,7 @@ export class VentaService {
       const eventoEsHoy =
         evento.tipo === 'DIARIO' ||
         (evento.tipo === 'UNICO' &&
-          new Date(evento.fecha).toDateString() === horaInicio.toDateString())
+          new Date(evento.fecha).toDateString() === hora_inicio.toDateString())
 
       const aplicaAlAmbiente = evento.ambientes?.some(
         (amb: any) => amb.id === ambienteId
@@ -38,14 +38,15 @@ export class VentaService {
 
       if (eventoEsHoy && aplicaAlAmbiente) {
         const diario = evento.tipo === TipoEvento.DIARIO
-        const inicioEvento = new Date(diario ? horaInicio : evento.horaInicio)
-        const finEvento = new Date(diario ? horaFin : evento.horaFin)
-        const [h, m] = evento.horaInicio.split(':')
+        const inicioEvento = new Date(diario ? hora_inicio : evento.hora_inicio)
+        const finEvento = new Date(diario ? hora_fin : evento.hora_fin)
+        const [h, m] = evento.hora_inicio.split(':')
         inicioEvento.setHours(Number(h), Number(m))
-        const [hf, mf] = evento.horaFin.split(':')
+        const [hf, mf] = evento.hora_fin.split(':')
         finEvento.setHours(Number(hf), Number(mf))
 
-        const haySolapamiento = horaInicio < finEvento && horaFin > inicioEvento
+        const haySolapamiento =
+          hora_inicio < finEvento && hora_fin > inicioEvento
 
         if (haySolapamiento) {
           conflictos.push(evento)
@@ -62,15 +63,15 @@ export class VentaService {
 
   private conflictosConVentas = async (
     ambienteId: string,
-    horaInicio: Date,
-    horaFin: Date
+    hora_inicio: Date,
+    hora_fin: Date
   ): Promise<void> => {
     const ahora = new Date()
 
     const conflictos = await this.ventaRepository.getConflictos(
       ambienteId,
-      horaInicio,
-      horaFin
+      hora_inicio,
+      hora_fin
     )
 
     for (const conflicto of conflictos) {
@@ -93,18 +94,18 @@ export class VentaService {
   create = async (data: Partial<Venta>) => {
     const ahora = new Date()
     const fechaInicio = new Date(data.hora_inicio!)
-    const fechaFin = new Date(data.horaFin!)
+    const fechaFin = new Date(data.hora_fin!)
 
     const ambiente = await this.ambienteRepository.findOne({
-      id: data.ambienteId!
+      id: data.ambiente_id!
     })
     if (ambiente && ambiente.tipo !== TipoAmbiente.SAUNA_MIXTO) {
       if (fechaFin <= ahora) {
         throw new Error('La hora de finalización ya ha pasado.')
       }
 
-      await this.conflictosConVentas(data.ambienteId!, fechaInicio, fechaFin)
-      await this.conflictosConEventos(fechaInicio, fechaFin, data.ambienteId!)
+      await this.conflictosConVentas(data.ambiente_id!, fechaInicio, fechaFin)
+      await this.conflictosConEventos(fechaInicio, fechaFin, data.ambiente_id!)
     }
 
     return await this.ventaRepository.create(data)
@@ -131,7 +132,7 @@ export class VentaService {
     const ahora = new Date()
 
     const fechaInicio = new Date(data.hora_inicio!)
-    const fechaFin = new Date(data.horaFin!)
+    const fechaFin = new Date(data.hora_fin!)
 
     if (fechaFin <= ahora) {
       throw new Error('La hora de finalización ya ha pasado.')
@@ -140,7 +141,7 @@ export class VentaService {
     // Verificar conflictos con otras ventas, excluyendo la venta actual
     const conflictos = await this.ventaRepository.getConflictosExcluyendoId(
       id,
-      data.ambienteId!,
+      data.ambiente_id!,
       fechaInicio,
       fechaFin
     )
@@ -162,7 +163,7 @@ export class VentaService {
     }
 
     // Verificar conflictos con eventos
-    await this.conflictosConEventos(fechaInicio, fechaFin, data.ambienteId!)
+    await this.conflictosConEventos(fechaInicio, fechaFin, data.ambiente_id!)
 
     // Guardar la actualización
     return await this.ventaRepository.update(id, {
@@ -196,5 +197,14 @@ export class VentaService {
       fechaInicio,
       fechaFin
     )
+  }
+
+  reporteVentasUsuario = async (fechaInicio: Date, fechaFin: Date) => {
+    const reporte = await this.ventaRepository.reporteVentasUsuario(
+      fechaInicio,
+      fechaFin
+    )
+    console.log(reporte)
+    return reporte
   }
 }

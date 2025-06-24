@@ -4,15 +4,15 @@ import { TipoVenta } from './tipo-venta.dto'
 export interface VentaInterface {
   id?: string
   hora_inicio: Date
-  horaFin: Date
-  precioTotal: number
+  hora_fin: Date
+  precio_total: number
   cantidad: number
-  usuarioId: string
-  ambienteId: string
+  usuario_id: string
+  ambiente_id: string
   tipo: TipoVenta
-  nombreCliente: string
+  nombre_cliente: string
   adelanto: number
-  celularCliente?: string
+  celular_cliente?: string
   created_at?: Date
   updated_at?: Date
   menu?: boolean

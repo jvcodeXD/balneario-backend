@@ -9,5 +9,6 @@ router.post(
   '/ventas/tipo-ambiente',
   ReporteController.reporteVentasTipoAmbiente
 )
+router.post('/usuarios/', ReporteController.reporteIngresoUsuarios)
 
 export default router

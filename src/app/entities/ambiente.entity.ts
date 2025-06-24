@@ -7,7 +7,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
+  DeleteDateColumn
 } from 'typeorm'
 import { EstadoAmbiente, TipoAmbiente } from '../dtos'
 import { Precio, Venta } from '.'
@@ -23,27 +23,29 @@ export class Ambiente {
   @Column({ default: '' })
   nombre: string
 
-  @Column({ type: 'enum', enum: EstadoAmbiente, default: EstadoAmbiente.HABILITADO })
+  @Column({
+    type: 'enum',
+    enum: EstadoAmbiente,
+    default: EstadoAmbiente.HABILITADO
+  })
   estado: EstadoAmbiente
 
-
   @ManyToOne(() => Precio, (precio) => precio.ambientes)
-  @JoinColumn({ name: 'precioId' })
+  @JoinColumn({ name: 'precio_id' })
   precio: Precio
 
   @Column({ type: 'uuid', nullable: true })
-  precioId: string
+  precio_id: string
 
   @OneToMany(() => Venta, (venta) => venta.ambiente)
   ventas: Venta[]
 
   @CreateDateColumn()
-  createdAt: Date
+  created_at: Date
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updated_at: Date
 
   @DeleteDateColumn()
-  deletedAt?: Date
-
+  deleted_at?: Date
 }

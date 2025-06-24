@@ -7,6 +7,6 @@ export interface AmbienteInterface {
   tipo: TipoAmbiente
   estado: EstadoAmbiente
   nombre: string
-  precioId: string
+  precio_id: string
   precio?: PrecioInterface
 }
