@@ -204,7 +204,6 @@ export class VentaService {
       fechaInicio,
       fechaFin
     )
-    console.log(reporte)
     return reporte
   }
 }

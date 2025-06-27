@@ -164,19 +164,16 @@ export class VentaRepository {
     return true
   }
 
-  getVentasByUsuario = async (
-    fechaInicio: Date,
-    fechaFin: Date,
-    idUsuario: string
-  ) => {
+  getVentasByUsuario = async (inicio: Date, fin: Date, usuario_id: string) => {
+    console.log(inicio, fin)
     return await this.repository
       .createQueryBuilder('venta')
       .leftJoinAndSelect('venta.ambiente', 'ambiente')
       .where('venta.created_at BETWEEN :inicio AND :fin', {
-        inicio: fechaInicio,
-        fin: fechaFin
+        inicio,
+        fin
       })
-      .andWhere('venta.usuario_id = :idUsuario', { idUsuario })
+      .andWhere('venta.usuario_id = :usuario_id', { usuario_id })
       .orderBy('venta.updated_at', 'ASC') // <-- Aquí agregamos el orden
       .getMany()
   }

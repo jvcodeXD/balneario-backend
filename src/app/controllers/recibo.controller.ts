@@ -16,12 +16,12 @@ export const ReciboController = {
   },
   obtenerReciboPiscina: (req: Request, res: Response) => {
     try {
-      const { ninos, adultos, usuarioId, precioNino, precioAdulto } = req.query
+      const { ninos, adultos, usuario_id, precioNino, precioAdulto } = req.query
       generarReciboPiscina(
         res,
         Number(ninos),
         Number(adultos),
-        String(usuarioId),
+        String(usuario_id),
         String(precioNino),
         String(precioAdulto)
       )

@@ -9,11 +9,11 @@ export const ReporteController = {
   reporteDiarioUsuario: async (req: Request, res: Response) => {
     try {
       logger.info(req.body)
-      const { fechaInicio, fechaFin, idUsuario } = req.body
+      const { fecha_inicio, fecha_fin, usuario_id } = req.body
       const reporte = await service.reporteDiarioUsuario(
-        fechaInicio,
-        fechaFin,
-        idUsuario
+        fecha_inicio,
+        fecha_fin,
+        usuario_id
       )
       res.json(reporte)
     } catch (error: any) {
@@ -23,8 +23,8 @@ export const ReporteController = {
 
   reporteDiarioUsuarioPDF: async (req: Request, res: Response) => {
     try {
-      const { idUsuario, fechaInicio, fechaFin } = req.body
-      service.reporteDiarioUsuarioPDF(res, fechaInicio, fechaFin, idUsuario)
+      const { usuario_id, fecha_inicio, fecha_fin } = req.body
+      service.reporteDiarioUsuarioPDF(res, fecha_inicio, fecha_fin, usuario_id)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }
@@ -32,10 +32,10 @@ export const ReporteController = {
 
   reporteVentasTipoAmbiente: async (req: Request, res: Response) => {
     try {
-      const { fechaInicio, fechaFin } = req.body
+      const { fecha_inicio, fecha_fin } = req.body
       const ventas = await service.reporteVentasTipoAmbiente(
-        fechaInicio,
-        fechaFin
+        fecha_inicio,
+        fecha_fin
       )
       res.json(ventas)
     } catch (error: any) {
@@ -45,12 +45,21 @@ export const ReporteController = {
 
   reporteIngresoUsuarios: async (req: Request, res: Response) => {
     try {
-      const { fechaInicio, fechaFin } = req.body
+      const { fecha_inicio, fecha_fin } = req.body
       const reporte = await service.reporteIngresoUsuarios(
-        fechaInicio,
-        fechaFin
+        fecha_inicio,
+        fecha_fin
       )
       res.json(reporte)
+    } catch (error: any) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  reporteIngresoUsuariosPDF: async (req: Request, res: Response) => {
+    try {
+      const { fecha_inicio, fecha_fin } = req.body
+      service.reporteIngresoUsuariosPDF(res, fecha_inicio, fecha_fin)
     } catch (error: any) {
       res.status(400).json({ error: error.message })
     }

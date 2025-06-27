@@ -8,12 +8,12 @@ export const generarReciboPiscina = async (
   res: Response,
   ninos: number,
   adultos: number,
-  usuarioId: string,
+  usuario_id: string,
   precioNino: string,
   precioAdulto: string
 ) => {
   const userService = new UserService()
-  const usuario = await userService.getById(usuarioId)
+  const usuario = await userService.getById(usuario_id)
   const totalNinos = ninos * Number(precioNino)
   const totalAdultos = adultos * Number(precioAdulto)
   const precioTotal = totalNinos + totalAdultos
@@ -721,4 +721,107 @@ const calcularRecibido = (venta: VentaInterface): number => {
   if (venta.tipo === TipoVenta.RESTANTE)
     return (venta.precio_total ?? 0) - (venta.adelanto ?? 0)
   return venta.precio_total ?? 0
+}
+
+interface DatosPDF {
+  rango: { fecha_inicio: Date; fecha_fin: Date }
+  agrupado: Record<
+    string,
+    {
+      usuario_id: string
+      fullname: string
+      cantidad_ventas: number
+      total_ventas: number
+    }[]
+  >
+  resumen: { fullname: string; cantidad_ventas: number; total_ventas: number }[]
+}
+
+export const reporteVentasUsuarios = (res: Response, datos: DatosPDF) => {
+  const doc = new PDFDocument({ margin: 40 })
+
+  res.setHeader('Content-Type', 'application/pdf')
+  res.setHeader(
+    'Content-Disposition',
+    'inline; filename="reporte_ventas_usuarios.pdf"'
+  )
+  doc.pipe(res)
+
+  const col1 = 50 // Inicio columna Usuario
+  const col2 = 300 // Inicio columna Cantidad
+  const col3 = 420 // Inicio columna Total
+
+  // Título
+  doc
+    .fontSize(14)
+    .font('Helvetica-Bold')
+    .text('Reporte de Ventas por Usuario', { align: 'center' })
+  doc.moveDown(0.5)
+
+  // Rango de fechas
+  doc.fontSize(10).font('Helvetica')
+  doc.text(`Fecha Inicio: ${format(datos.rango.fecha_inicio, 'dd/MM/yyyy')}`)
+  doc.text(`Fecha Fin: ${format(datos.rango.fecha_fin, 'dd/MM/yyyy')}`)
+  doc.moveDown(1)
+
+  // Tabla agrupada por fechas
+  Object.keys(datos.agrupado)
+    .sort()
+    .forEach((fecha) => {
+      doc
+        .font('Helvetica-Bold')
+        .text(format(new Date(fecha), 'dd/MM/yyyy'), 50, doc.y)
+      doc.moveDown(0.3)
+
+      let y = doc.y
+      // Encabezado
+      doc.fontSize(9).font('Helvetica-Bold')
+      doc.text('Usuario', col1, y)
+      doc.text('Cantidad', col2, y, { width: 50, align: 'right' })
+      doc.text('Total (Bs)', col3, y, { width: 80, align: 'right' })
+      doc.moveDown(0.2)
+      doc.moveTo(40, doc.y).lineTo(550, doc.y).stroke()
+      doc.moveDown(0.3)
+
+      // Datos
+      datos.agrupado[fecha].forEach((u) => {
+        const rowY = doc.y
+        doc.font('Helvetica').text(u.fullname, col1, rowY)
+        doc.text(`${u.cantidad_ventas}`, col2, rowY, {
+          width: 50,
+          align: 'right'
+        })
+        doc.text(`${u.total_ventas} Bs`, col3, rowY, {
+          width: 80,
+          align: 'right'
+        })
+      })
+
+      doc.moveDown(0.8)
+    })
+
+  // Línea separadora
+  doc.moveTo(40, doc.y).lineTo(550, doc.y).stroke()
+  doc.moveDown(0.8)
+
+  // Resumen general
+  doc.font('Helvetica-Bold').text('Resumen General', 50, doc.y)
+  doc.moveDown(0.3)
+  let y = doc.y
+  doc.fontSize(9).font('Helvetica-Bold')
+  doc.text('Usuario', col1, y)
+  doc.text('Cantidad', col2, y, { width: 50, align: 'right' })
+  doc.text('Total (Bs)', col3, y, { width: 80, align: 'right' })
+  doc.moveDown(0.2)
+  doc.moveTo(40, doc.y).lineTo(550, doc.y).stroke()
+  doc.moveDown(0.3)
+
+  datos.resumen.forEach((u) => {
+    const y = doc.y
+    doc.font('Helvetica').text(u.fullname, col1, y)
+    doc.text(`${u.cantidad_ventas}`, col2, y, { width: 50, align: 'right' })
+    doc.text(`${u.total_ventas} Bs`, col3, y, { width: 80, align: 'right' })
+  })
+
+  doc.end()
 }
