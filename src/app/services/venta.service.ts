@@ -206,4 +206,13 @@ export class VentaService {
     )
     return reporte
   }
+
+  reporteAmbientesUsados = async (fechaInicio: Date, fechaFin: Date) => {
+    const reporte = await this.ventaRepository.reporteAmbientesUsados(
+      fechaInicio,
+      fechaFin
+    )
+    console.log(reporte)
+    return reporte
+  }
 }

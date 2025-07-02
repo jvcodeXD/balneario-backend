@@ -251,4 +251,46 @@ export class VentaRepository {
       cantidad_ventas: Number(v.cantidad_ventas)
     }))
   }
+
+  reporteAmbientesUsados = async (fechaInicio: Date, fechaFin: Date) => {
+    const repo = AppDataSource.getRepository(Venta)
+
+    const resultado = await repo
+      .createQueryBuilder('venta')
+      .select('venta.ambiente_id', 'ambiente_id')
+      .addSelect('ambiente.nombre', 'nombre')
+      .addSelect('COUNT(venta.id)', 'total_ventas')
+      .addSelect(
+        'SUM(EXTRACT(EPOCH FROM (venta.hora_fin - venta.hora_inicio)) / 3600)',
+        'total_horas'
+      )
+      .addSelect(
+        `
+      SUM(
+        CASE
+          WHEN venta.tipo = 'CANCELADA' THEN -venta.precio_total
+          ELSE venta.precio_total
+        END
+      )
+    `,
+        'total_ingresos'
+      )
+      .innerJoin('ambiente', 'ambiente', 'ambiente.id = venta.ambiente_id')
+      .where('venta.hora_inicio BETWEEN :inicio AND :fin', {
+        inicio: fechaInicio,
+        fin: fechaFin
+      })
+      .andWhere('ambiente.deleted_at IS NULL')
+      .groupBy('venta.ambiente_id, ambiente.nombre')
+      .orderBy('total_ingresos', 'DESC')
+      .getRawMany()
+
+    return resultado.map((r) => ({
+      ambiente_id: r.ambiente_id,
+      nombre: r.nombre,
+      total_ventas: Number(r.total_ventas),
+      total_horas: Number(r.total_horas) || 0,
+      total_ingresos: Number(r.total_ingresos) || 0
+    }))
+  }
 }

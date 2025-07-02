@@ -109,4 +109,12 @@ export class ReporteService {
     // Envías los datos al generador del PDF
     reporteVentasUsuarios(res, datosFormateados)
   }
+
+  reporteAmbientesUsados = async (fechaInicio: Date, fechaFin: Date) => {
+    const reporte = await this.ventaService.reporteAmbientesUsados(
+      fechaInicio,
+      fechaFin
+    )
+    return reporte
+  }
 }
